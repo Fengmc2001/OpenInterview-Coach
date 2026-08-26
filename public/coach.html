@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja" data-audio-base="audio">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>OpenInterview Coach</title>
+<style>
+  :root {
+    --paper:    #F4F1E6;  /* 暖米黄 — 页面底 */
+    --panel:    #E6E1D1;  /* 灰米 — 卡头条/表头/浅填充 */
+    --surface:  #FBF9F1;  /* 更浅米 — 卡体/输入框 */
+    --ink:      #21304A;  /* 深藏青墨 — 所有文字/边框/阴影 */
+    --ink-soft: #9B988D;  /* 暖灰 — 次级文字/占位/元信息 */
+    --blue:     #2C4E7E;  /* 哑藏蓝 — 正向语义 */
+    --red:      #A3322A;  /* 砖红 — 错误/危险语义 */
+    --gold:     #8C6E2F;  /* 橄榄金 — 警示语义 */
+    --divider:  #D8D3C2;  /* 行内分隔线 */
+    --shadow-hard: 5px 5px 0 var(--ink);
+    --shadow-hard-sm: 3px 3px 0 var(--ink);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "PingFang SC", system-ui, sans-serif;
+    font-size: 15px;
+    color: var(--ink); line-height: 1.65;
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
+  }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  svg.ic { width: 17px; height: 17px; stroke: currentColor; stroke-width: 1.7; fill: none;
+    stroke-linecap: round; stroke-linejoin: round; flex: none; vertical-align: -3px; }
+
+  /* ---------- app frame ---------- */
+  #app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; max-width: 760px; margin: 0 auto; }
+  main { flex: 1; min-height: 0; position: relative; }
+  .view { height: 100%; }
+
+  /* ---------- top bar（报头） ---------- */
+  .top { padding: 12px 18px 0; flex: none; border-bottom: 3px solid var(--ink); background: var(--paper); }
+  .toprow { display: flex; align-items: center; gap: 10px; min-height: 36px; }
+  .toprow h1 { font-size: 16px; font-weight: 700; font-style: italic; letter-spacing: 1px; margin-right: auto; }
+  .iconbtn {
+    border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer;
+    width: 34px; height: 34px; border-radius: 0; display: inline-flex;
+    align-items: center; justify-content: center; flex: none;
+  }
+  .iconbtn:hover { background: var(--panel); }
+  .counter {
+    border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer;
+    font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 2px;
+    padding: 6px 10px; border-radius: 0; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .counter:hover { background: var(--panel); }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 12px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    border: 2px solid var(--ink); background: var(--surface); color: var(--ink);
+    padding: 7px 14px; border-radius: 0; cursor: pointer; font-size: 13px; font-weight: 700;
+    letter-spacing: .5px; white-space: nowrap; flex: none;
+  }
+  .chip.active { background: var(--ink); color: var(--paper); }
+
+  /* ---------- card deck (跟读) ---------- */
+  #shadowView { display: flex; flex-direction: column; }
+  .deck {
+    flex: 1; min-height: 0; display: flex; gap: 14px;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    padding: 16px 0 16px;
+    scrollbar-width: none;
+  }
+  .deck::-webkit-scrollbar { display: none; }
+  .card {
+    flex: 0 0 calc(100% - 48px); min-width: 0;
+    scroll-snap-align: center; scroll-snap-stop: always;
+    background: var(--surface); border: 2px solid var(--ink); border-radius: 0;
+    box-shadow: var(--shadow-hard);
+    display: flex; flex-direction: column; min-height: 0;
+    padding: 22px 20px 18px;
+  }
+  .card:first-child { margin-left: 24px; }
+  .card:last-child { margin-right: 29px; }
+  .card.playing { border-color: var(--blue); box-shadow: 5px 5px 0 var(--blue); }
+  .card-top {
+    display: flex; align-items: center; gap: 10px; flex: none;
+    background: var(--panel); border-bottom: 2px solid var(--ink);
+    margin: -22px -20px 16px; padding: 9px 16px;
+  }
+  .qnum { color: var(--ink); font-weight: 700; font-size: 12.5px; letter-spacing: 2px; }
+  .badge {
+    font-size: 11px; padding: 0; border-radius: 0; white-space: nowrap;
+    background: transparent; color: var(--ink-soft); display: inline-flex; align-items: center; gap: 6px;
+    margin-left: auto; font-weight: 700; letter-spacing: 1px;
+  }
+  .badge::before { content: ""; width: 11px; height: 11px; background: currentColor; flex: none; }
+  .badge svg { display: none; }
+  .badge.hq { background: transparent; color: var(--blue); }
+  .card-q { font-size: 19px; line-height: 1.55; font-weight: 700; flex: none; max-height: 24%; overflow-y: auto; border-left: 4px solid var(--ink); padding-left: 12px; scrollbar-width: none; }
+  .card-q::-webkit-scrollbar { display: none; }
+  .card-ctrl { display: flex; gap: 14px; margin: 20px 0 16px; align-items: center; justify-content: center; flex: none; }
+  .card-ans {
+    flex: 1; min-height: 0; overflow-y: auto;
+    border-top: 1px solid var(--divider);
+    padding: 14px 2px 6px; font-size: 15px; line-height: 1.95; white-space: pre-wrap; color: var(--ink);
+    -webkit-overflow-scrolling: touch;
+  }
+  .card-ans.placeholder { color: var(--ink-soft); }
+  .ans-label { display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 3px; margin-bottom: 8px; color: var(--ink-soft); }
+  /* 播放进度条（跟读卡，默认常显；mp3 播放时填充、可点按/拖动定位） */
+  .seekbar { display: flex; align-items: center; gap: 11px; margin: 2px 0 14px; flex: none; }
+  .seek-track {
+    flex: 1; height: 10px; border: 2px solid var(--ink); background: var(--surface);
+    position: relative; cursor: pointer; touch-action: none;
+  }
+  .seek-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: var(--blue); }
+  .seek-thumb {
+    position: absolute; top: 50%; left: 0; width: 15px; height: 15px;
+    background: var(--blue); border: 2px solid var(--ink);
+    transform: translate(-50%, -50%); pointer-events: none;
+  }
+  .seek-time {
+    font-size: 11.5px; font-weight: 700; color: var(--ink-soft);
+    font-variant-numeric: tabular-nums; min-width: 84px; text-align: right; letter-spacing: .5px;
+  }
+  /* 分页指示（方块） */
+  .dots { display: flex; gap: 6px; justify-content: center; align-items: center; padding: 2px 16px 12px; flex: none; flex-wrap: wrap; }
+  .dots button {
+    width: 7px; height: 7px; border-radius: 0; border: none; padding: 0; cursor: pointer;
+    background: var(--divider); transition: width .2s ease-out;
+  }
+  .dots button.on { width: 21px; background: var(--ink); }
+  .deck-arrow {
+    display: none; position: absolute; top: 50%; transform: translateY(-50%); z-index: 4;
+    width: 38px; height: 38px; border-radius: 0; border: 2px solid var(--ink);
+    background: var(--surface); color: var(--ink); cursor: pointer;
+    align-items: center; justify-content: center; box-shadow: var(--shadow-hard-sm);
+  }
+  .deck-arrow:hover { background: var(--panel); }
+  .deck-arrow.prev { left: 4px; }
+  .deck-arrow.next { right: 4px; }
+  @media (hover: hover) and (min-width: 700px) { .deck-arrow { display: inline-flex; } }
+
+  /* ---------- buttons ---------- */
+  .btn {
+    border: 2px solid var(--ink); background: var(--surface); padding: 9px 15px; border-radius: 0;
+    cursor: pointer; font-size: 14px; color: var(--ink); font-weight: 700; letter-spacing: .5px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn:hover { background: var(--panel); color: var(--ink); }
+  .btn.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); box-shadow: var(--shadow-hard-sm); }
+  .btn.primary:hover { background: var(--blue); border-color: var(--blue); color: var(--paper); }
+  .btn.rec { background: var(--red); border-color: var(--ink); color: var(--paper); }
+  .btn.rec:hover { background: #7E2620; color: var(--paper); }
+  .btn.rec.on { animation: pulse 1.3s infinite; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  @keyframes pulse { 0%,100% { background: var(--red); } 50% { background: #7E2620; } }
+
+  /* 纯图标操作键（方形） */
+  .ibtn {
+    width: 46px; height: 46px; border-radius: 0; border: 2px solid var(--ink);
+    background: var(--surface); color: var(--ink); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+  }
+  .ibtn svg.ic { width: 19px; height: 19px; vertical-align: 0; }
+  .ibtn:hover { background: var(--panel); color: var(--ink); }
+  .ibtn.big { width: 58px; height: 58px; }
+  .ibtn.big svg.ic { width: 24px; height: 24px; }
+  .ibtn.primary { background: var(--ink); color: var(--paper); box-shadow: var(--shadow-hard-sm); }
+  .ibtn.primary:hover { background: var(--blue); color: var(--paper); }
+  .ibtn.toggled { background: var(--blue); color: var(--paper); border-color: var(--ink); }
+  .ibtn.rec { background: var(--red); color: var(--paper); border-color: var(--ink); }
+  .ibtn.rec:hover { background: #7E2620; color: var(--paper); }
+  .ibtn.rec.on {
+    width: auto; min-width: 46px; border-radius: 0; padding: 0 16px; gap: 7px;
+    font-size: 14px; font-weight: 700; animation: pulse 1.3s infinite;
+  }
+  .ibtn:disabled { opacity: .45; cursor: not-allowed; }
+
+  /* ---------- bottom nav ---------- */
+  nav.bottom {
+    flex: none; display: flex; background: var(--paper);
+    border-top: 3px solid var(--ink);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav.bottom button {
+    flex: 1; border: none; background: transparent; cursor: pointer; color: var(--ink-soft);
+    padding: 9px 0 7px; font-size: 11.5px; font-weight: 700; letter-spacing: 1px;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  nav.bottom button svg { width: 21px; height: 21px; stroke-width: 1.8; }
+  nav.bottom button.active { color: var(--ink); }
+
+  /* ---------- bottom sheet ---------- */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(33,48,74,.4); z-index: 20;
+    opacity: 0; pointer-events: none; transition: opacity .22s;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 21;
+    max-width: 760px; margin: 0 auto;
+    background: var(--surface); border: 2px solid var(--ink); border-bottom: none; border-radius: 0;
+    max-height: 72vh; max-height: 72dvh;
+    display: flex; flex-direction: column;
+    transform: translateY(102%); transition: transform .26s cubic-bezier(.32,.72,.33,1);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sheet.open { transform: none; }
+  .sheet-head { padding: 16px 20px 10px; flex: none; display: flex; align-items: center; }
+  .sheet-head::before {
+    content: ""; position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+    width: 36px; height: 4px; border-radius: 0; background: var(--ink);
+  }
+  .sheet-head h3 { font-size: 15px; font-weight: 700; letter-spacing: 1px; }
+  .sheet-body { overflow-y: auto; padding: 4px 20px 24px; -webkit-overflow-scrolling: touch; }
+  @media (prefers-reduced-motion: reduce) { .sheet, .scrim { transition: none; } }
+
+  /* 总览列表（行 + 分隔线） */
+  .ov-item {
+    width: 100%; text-align: left; border: none; border-bottom: 1px solid var(--divider);
+    background: transparent; border-radius: 0; padding: 12px 4px; margin-bottom: 0; cursor: pointer;
+    display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink);
+  }
+  .ov-item:hover { background: var(--panel); }
+  .ov-item.current { background: var(--panel); }
+  .ov-item .n { color: var(--ink); font-weight: 700; font-size: 12.5px; flex: none; width: 34px; letter-spacing: 1px; }
+  .ov-item .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ov-item .dot { width: 11px; height: 11px; border-radius: 0; background: var(--ink-soft); flex: none; }
+  .ov-item .dot.ok { background: var(--blue); }
+
+  /* 播放设置 */
+  .set-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--divider); font-size: 14.5px; color: var(--ink); }
+  .set-row:last-child { border-bottom: none; }
+  .set-row input[type=range] { width: 150px; accent-color: var(--ink); }
+  .set-row select { padding: 7px 11px; border: 2px solid var(--ink); border-radius: 0; background: var(--surface); color: var(--ink); font-size: 14px; }
+  .set-row .val { color: var(--ink); font-weight: 700; min-width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* ---------- interview ---------- */
+  #interviewView { display: flex; flex-direction: column; overflow-y: auto; padding: 16px 18px 18px; }
+  .panel {
+    background: var(--surface); border: 2px solid var(--ink); border-radius: 0;
+    padding: 14px 16px; box-shadow: var(--shadow-hard-sm); margin-bottom: 16px;
+    display: flex; gap: 12px 20px; flex-wrap: wrap; align-items: center; font-size: 14px; flex: none;
+  }
+  .panel label { display: flex; align-items: center; gap: 8px; color: var(--ink); }
+  .panel select { padding: 6px 10px; border: 2px solid var(--ink); border-radius: 0; background: var(--surface); color: var(--ink); font-size: 14px; }
+  .panel input[type=checkbox] { accent-color: var(--ink); width: 16px; height: 16px; }
+  .flashcard {
+    background: var(--surface); border: 2px solid var(--ink); border-radius: 0;
+    padding: 30px 22px 24px; text-align: center; margin: 10px 0 14px; box-shadow: var(--shadow-hard);
+  }
+  .fc-school { font-size: 11.5px; letter-spacing: 3px; margin-bottom: 14px; font-weight: 700; color: var(--ink-soft); }
+  .fc-q { font-size: 16px; line-height: 1.75; min-height: 60px; font-weight: 700; }
+  .fc-progress { font-size: 12.5px; color: var(--ink-soft); text-align: center; letter-spacing: 2px; font-weight: 700; }
+  .fc-btns { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .flashcard .answer {
+    text-align: left; margin-top: 18px; padding: 14px 16px;
+    background: var(--paper); border: 2px solid var(--ink); border-radius: 0;
+    font-size: 15px; line-height: 1.9; white-space: pre-wrap; color: var(--ink);
+  }
+  .answer.hide { display: none; }
+  .transcript {
+    margin-top: 16px; padding: 13px 15px; background: var(--paper); border: 2px solid var(--ink); border-radius: 0;
+    font-size: 14px; color: var(--ink); text-align: left; min-height: 44px; display: none; line-height: 1.7;
+  }
+  .transcript.show { display: block; }
+  .transcript .interim { color: var(--ink-soft); }
+  .takes { margin-top: 14px; text-align: left; }
+  .take {
+    display: flex; align-items: center; gap: 10px; background: var(--paper);
+    border: 2px solid var(--ink); border-radius: 0; padding: 9px 13px; margin-top: 8px; font-size: 13px;
+  }
+  .take .tnum { color: var(--ink); font-weight: 700; white-space: nowrap; letter-spacing: 1px; }
+  .take audio { height: 34px; flex: 1; min-width: 0; }
+  .take a { color: var(--blue); text-decoration: none; white-space: nowrap; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+  .rec-timer { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+  /* ---------- guide (回答思路) ---------- */
+  #guideView { overflow-y: auto; padding: 16px 18px 24px; -webkit-overflow-scrolling: touch; }
+  .g-head { margin: 0 0 16px; padding: 0; border: 2px solid var(--ink); border-radius: 0; background: var(--surface); box-shadow: var(--shadow-hard-sm); }
+  .g-head h2 { font-size: 17px; margin: 0; padding: 12px 18px; color: var(--ink); display: flex; align-items: center; gap: 9px; background: var(--panel); border-bottom: 2px solid var(--ink); }
+  .g-head h2 svg { width: 19px; height: 19px; stroke: var(--ink); }
+  .g-head p { font-size: 14px; color: var(--ink); line-height: 1.8; padding: 12px 18px 14px; }
+  .g-toc {
+    display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 8px; position: sticky; top: -16px; z-index: 5;
+    background: var(--paper);
+    padding: 12px 0; border-bottom: 2px solid var(--ink);
+  }
+  .g-toc a {
+    font-size: 13px; color: var(--ink); text-decoration: none; background: var(--surface);
+    border: 2px solid var(--ink); border-radius: 0; padding: 6px 12px; font-weight: 700;
+  }
+  .g-toc a:hover { background: var(--panel); }
+  .g-toc .btn { padding: 6px 12px; font-size: 13px; }
+  .g-chapter { margin-top: 28px; }
+  .g-chapter > h3 { font-size: 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 13px; scroll-margin-top: 64px; font-weight: 700; letter-spacing: 1px; }
+  .g-chapter > h3 .cnum {
+    background: var(--ink); color: var(--paper); font-size: 13px; width: 24px; height: 24px; border-radius: 0;
+    display: inline-flex; align-items: center; justify-content: center; flex: none; font-weight: 700;
+  }
+  details.g-item {
+    background: var(--surface); border: 2px solid var(--ink); border-radius: 0;
+    margin-bottom: 10px; overflow: hidden;
+  }
+  details.g-item[open] { box-shadow: var(--shadow-hard-sm); }
+  details.g-item summary {
+    cursor: pointer; list-style: none; padding: 14px 16px; font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; gap: 10px;
+  }
+  details.g-item summary::-webkit-details-marker { display: none; }
+  details.g-item summary .gq {
+    color: var(--ink); font-size: 12px; font-weight: 700; white-space: nowrap; letter-spacing: 1px;
+    background: transparent; border-radius: 0; padding: 0;
+  }
+  details.g-item summary .arrow { margin-left: auto; color: var(--ink-soft); transition: transform .15s; display: flex; }
+  details.g-item summary .arrow svg { width: 15px; height: 15px; }
+  details.g-item[open] summary .arrow { transform: rotate(90deg); }
+  .g-body { padding: 2px 16px 16px; border-top: 1px solid var(--divider); }
+  .g-row { display: flex; flex-direction: column; gap: 4px; margin-top: 13px; font-size: 14px; line-height: 1.75; }
+  .g-tag {
+    align-self: flex-start; font-size: 11px; font-weight: 700; border-radius: 0; padding: 2px 8px;
+    background: var(--panel); color: var(--ink); white-space: nowrap; letter-spacing: 1px;
+  }
+  .g-tag.intent { background: var(--ink); color: var(--paper); }
+  .g-row .g-lines > div { margin-bottom: 2px; }
+  .g-ja-line { display: flex; align-items: baseline; gap: 8px; }
+  .g-ja-line span { font-weight: 600; }
+  .g-ja-line .play { border: none; background: none; cursor: pointer; padding: 0 2px; flex: none; color: var(--blue); display: inline-flex; }
+  .g-ja-line .play:hover { color: var(--ink); }
+  .g-ja-line .play svg { width: 15px; height: 15px; }
+  .g-block { margin-top: 15px; }
+  .g-block h4 {
+    font-size: 12.5px; color: var(--ink); background: var(--panel); border: 1px solid var(--ink);
+    display: inline-block; padding: 3px 10px; border-radius: 0; margin-bottom: 9px; font-weight: 700; letter-spacing: 1px;
+  }
+  .g-block p, .g-block li { font-size: 14px; line-height: 1.9; color: var(--ink); }
+  .g-block ol, .g-block ul { padding-left: 21px; }
+  .g-block ul.sub { padding-left: 16px; margin: 2px 0 8px; list-style: none; }
+  .g-block ul.sub li { color: var(--ink-soft); font-size: 13px; position: relative; padding-left: 14px; }
+  .g-block ul.sub li::before { content: ""; position: absolute; left: 0; top: 11px; width: 5px; height: 5px; border-radius: 0; background: var(--ink-soft); }
+  .g-block b { color: var(--ink); font-weight: 700; }
+
+  .hint { font-size: 13px; color: var(--ink-soft); margin-top: 8px; line-height: 1.7; text-align: center; flex: none; }
+  .empty { text-align: center; color: var(--ink-soft); padding: 56px 0; font-size: 14px; }
+  .empty .big { display: flex; justify-content: center; margin-bottom: 14px; color: var(--ink-soft); }
+  .empty .big svg { width: 40px; height: 40px; stroke-width: 1.5; }
+  #toast {
+    position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%); z-index: 30;
+    background: var(--ink); color: var(--paper); padding: 11px 20px; border-radius: 0;
+    border: 2px solid var(--ink);
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .25s;
+    box-shadow: var(--shadow-hard-sm); max-width: 86vw;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="toprow">
+      <h1 id="topTitle">OpenInterview Coach</h1>
+      <button class="counter" id="counterBtn" onclick="openSheet('overview')" title="题目总览"></button>
+      <button class="iconbtn" id="gearBtn" onclick="openSheet('settings')" title="播放设置"></button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <main>
+    <!-- ============ 跟读：卡片组 ============ -->
+    <section class="view" id="shadowView">
+      <div class="deck" id="deck"></div>
+      <div class="dots" id="dots"></div>
+      <button class="deck-arrow prev" onclick="goTo(S.idx-1)" aria-label="上一题"></button>
+      <button class="deck-arrow next" onclick="goTo(S.idx+1)" aria-label="下一题"></button>
+    </section>
+
+    <!-- ============ 模拟面试 ============ -->
+    <section class="view" id="interviewView" style="display:none">
+      <div class="panel">
+        <label>抽题范围 <select id="scope">
+          <option value="current">当前语言</option><option value="all">全部语言</option></select></label>
+        <label><input type="checkbox" id="autoRec"> 读完问题后自动录音</label>
+        <label><input type="checkbox" id="liveStt" onchange="el('transcript').classList.toggle('show', this.checked)"> 实时识别字幕（仅Chrome）</label>
+        <button class="btn primary" id="startBtn" onclick="startInterview()"></button>
+      </div>
+      <div id="ivStage" style="display:none">
+        <p class="fc-progress" id="fcProgress"></p>
+        <div class="flashcard">
+          <div class="fc-school" id="fcSchool"></div>
+          <div class="fc-q" id="fcQ"></div>
+          <div class="fc-btns" id="fcBtns"></div>
+          <div class="answer hide" id="ivAnswerBox"><span class="ans-label">MY ANSWER</span><div id="ivAnswer"></div></div>
+          <div class="transcript" id="transcript"></div>
+          <div class="takes" id="takes"></div>
+        </div>
+        <p class="hint">录音仅保存在本次会话中，关闭页面会丢失，想保留请点「下载」。</p>
+      </div>
+      <div class="empty" id="ivEmpty"><span class="big" id="emptyIcon"></span>点击「开始 / 重新抽题」，随机抽取问题开始模拟面试</div>
+    </section>
+
+    <!-- ============ 回答思路 ============ -->
+    <section class="view" id="guideView" style="display:none"></section>
+  </main>
+
+  <nav class="bottom" id="bottomNav">
+    <button id="navShadow" class="active" onclick="setMode('shadow')"></button>
+    <button id="navInterview" onclick="setMode('interview')"></button>
+    <button id="navGuide" onclick="setMode('guide')"></button>
+  </nav>
+</div>
+
+<!-- ============ 抽屉 ============ -->
+<div class="scrim" id="scrim" onclick="closeSheets()"></div>
+<div class="sheet" id="sheet-overview">
+  <div class="sheet-head"><h3 id="ovTitle">题目总览</h3></div>
+  <div class="sheet-body" id="ovBody"></div>
+</div>
+<div class="sheet" id="sheet-settings">
+  <div class="sheet-head"><h3>播放设置</h3></div>
+  <div class="sheet-body">
+    <div class="set-row">语速
+      <span style="display:flex;align-items:center;gap:10px">
+        <input type="range" id="rate" min="0.6" max="1.3" step="0.05" value="1"
+          oninput="S.rate=+this.value; el('rateVal').textContent=this.value+'x'">
+        <span class="val" id="rateVal">1x</span></span>
+    </div>
+    <div class="set-row">重复次数
+      <select id="repeat" onchange="S.repeat=+this.value">
+        <option>1</option><option selected>3</option><option>5</option><option>10</option></select>
+    </div>
+    <div class="set-row">跟读间隔
+      <select id="gap" onchange="S.gap=+this.value">
+        <option value="1">1秒</option><option value="2" selected>2秒</option>
+        <option value="3">3秒</option><option value="5">5秒</option></select>
+    </div>
+    <div class="set-row"><span>停止所有播放</span><button class="btn" id="stopAllBtn" onclick="stopAll()"></button></div>
+    <p class="hint">本网站预生成的“高音质”语音为 AI 生成语音。</p>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script src="data/questions.js"></script>
+<script src="data/guide.js"></script>
+<script>
+const DATA = window.INTERVIEW_DATA;
+const el = id => document.getElementById(id);
+const S = { mode: 'shadow', school: DATA.schools[0].id, idx: 0, rate: 1, repeat: 3, gap: 2 };
+const audioKind = {};
+const audioPath = {};
+const audioBase = document.documentElement.dataset.audioBase || 'audio';
+const audioProbeBase = audioBase === 'media/audio' ? 'media/probe' : audioBase;
+const audioProbeMethod = audioBase === 'media/audio' ? 'GET' : 'HEAD';
+const QTEXT = {};
+for (const sc of DATA.schools) for (const q of sc.questions) {
+  QTEXT[q.id] = q;
+  audioPath[q.id] = `${audioBase}/${sc.id}/${q.id}.mp3`;
+  audioPath[q.id + '-a'] = `${audioBase}/${sc.id}/${q.id}-a.mp3`;
+}
+const AUDIO_CACHE_BUST = Date.now();
+let playToken = 0;
+let guideRendered = false;
+
+/* ---------- 图标（统一细线 SVG） ---------- */
+const PATHS = {
+  play: '<polygon points="6 4 20 12 6 20 6 4"/>',
+  pause: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  volume: '<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/>',
+  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+  mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="22"/>',
+  download: '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/>',
+  sparkle: '<path d="M12 3l1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7z"/>',
+  repeat: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>',
+  chat: '<path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.4 8.4 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.4 8.4 0 0 1 21 11.5z"/>',
+  book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  arrow: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  chevron: '<path d="m9 6 6 6-6 6"/>',
+  chevL: '<path d="m15 6-6 6 6 6"/>',
+  loop: '<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>',
+  rew3: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><text x="12.5" y="16" text-anchor="middle" font-size="9.5" font-weight="700" fill="currentColor" stroke="none">3</text>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  sliders: '<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/>'
+};
+function ic(name) { return `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${PATHS[name]}</svg>`; }
+
+/* 注入静态按钮图标 */
+el('gearBtn').innerHTML = ic('sliders');
+el('navShadow').innerHTML = ic('repeat') + '<span>跟读</span>';
+el('navInterview').innerHTML = ic('chat') + '<span>面试</span>';
+el('navGuide').innerHTML = ic('book') + '<span>思路</span>';
+el('stopAllBtn').innerHTML = ic('stop') + ' 停止';
+el('startBtn').innerHTML = ic('sparkle') + ' 开始 / 重新抽题';
+el('emptyIcon').innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${PATHS.chat}</svg>`;
+el('fcBtns').innerHTML =
+  `<button class="ibtn" onclick="playCurrentIv()" title="再听一遍" aria-label="再听一遍">${ic('volume')}</button>` +
+  `<button class="ibtn" onclick="rewind3()" title="快退3秒" aria-label="快退3秒">${ic('rew3')}</button>` +
+  `<button class="ibtn rec" id="recBtn" onclick="toggleRecord()" title="录音" aria-label="录音">${ic('mic')}</button>` +
+  `<button class="ibtn" id="ansBtn" onclick="toggleIvAnswer()" title="参考答案" aria-label="参考答案">${ic('eye')}</button>` +
+  `<button class="ibtn primary" onclick="nextIvQuestion()" title="下一题" aria-label="下一题">${ic('arrow')}</button>`;
+document.querySelector('.deck-arrow.prev').innerHTML = ic('chevL');
+document.querySelector('.deck-arrow.next').innerHTML = ic('chevron');
+
+function toast(msg) {
+  el('toast').textContent = msg;
+  el('toast').classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el('toast').classList.remove('show'), 2600);
+}
+
+/* ---------- 音频可用性探测 ---------- */
+async function probeAudio() {
+  if (location.protocol === 'file:') return;
+  const jobs = [];
+  for (const sc of DATA.schools) for (const q of sc.questions) {
+    for (const suf of ['', '-a']) {
+      const key = q.id + suf;
+      const probePath = audioPath[key].replace(`${audioBase}/`, `${audioProbeBase}/`);
+      jobs.push(fetch(`${probePath}?v=${AUDIO_CACHE_BUST}`, { method: audioProbeMethod })
+        .then(r => { audioKind[q.id + suf] = r.ok ? 'file' : 'tts'; })
+        .catch(() => { audioKind[q.id + suf] = 'tts'; }));
+    }
+  }
+  await Promise.allSettled(jobs);
+  if (S.mode === 'shadow') renderDeck(true);
+}
+
+/* ---------- 播放（mp3 优先，TTS 兜底） ---------- */
+let jaVoice = null;
+function pickJaVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => v.lang.startsWith('ja'));
+  jaVoice = vs.find(v => /otoya|keita|男/i.test(v.name)) || vs[0] || null;
+}
+if ('speechSynthesis' in window) {
+  pickJaVoice();
+  speechSynthesis.onvoiceschanged = pickJaVoice;
+}
+
+let loopMode = false; // 循环播放：播完当前卡自动滑到下一张
+
+/* ============================================================
+   音频引擎：单一持久 <audio> 元素 + 可暂停的播放序列
+   - 复用同一个被用户手势「解锁」过的 <audio>，避免 Safari / 手机端
+     在自动切题（非手势触发的 setTimeout）里 play() 被自动播放策略
+     拦截，从而退化成低音質 TTS 的问题。
+   - 序列状态机：支持「暂停后从原位置继续」（任务 1）。
+   一个序列由若干 segment 组成：
+     { kind:'clip', id, text, suffix }  —— 一段音频（mp3 优先，缺失/失败走 TTS）
+     { kind:'gap',  ms }                —— 间隔
+   ============================================================ */
+const player = new Audio();
+player.preload = 'auto';
+player.addEventListener('timeupdate', updateSeekFill);
+player.addEventListener('loadedmetadata', updateSeekFill);
+
+let seq = null;        // 当前序列（segment 数组）；null = 空闲
+let seqPos = 0;        // 下一个要播放的 segment 下标
+let seqCardEl = null;  // 高亮的卡片元素
+let seqDone = null;    // 序列正常播完的回调（循环模式接力用）
+let isPaused = false;  // 是否处于暂停态（位置保留）
+let usingTTS = false;  // 当前 clip 是否走 TTS（影响暂停/快退）
+let gapTimer = null;   // 当前 gap 的 timeout 句柄
+let gapEndAt = 0;      // 当前 gap 预计结束的时间戳
+let gapRemain = 0;     // 暂停时记录的 gap 剩余 ms
+
+const isPlaying = () => !!seq && !isPaused;
+
+function stopAll() {
+  playToken++;
+  isPaused = false;
+  usingTTS = false;
+  if (gapTimer) { clearTimeout(gapTimer); gapTimer = null; }
+  gapRemain = 0;
+  player.pause();
+  player.onended = player.onerror = null;
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  seq = null; seqPos = 0; seqDone = null;
+  document.querySelectorAll('.card.playing, .flashcard.playing').forEach(c => c.classList.remove('playing'));
+  seqCardEl = null;
+  syncPlayBtns();
+  showSeekbar();
+}
+
+function hasAnswer(q) {
+  const ans = (q.a || '').trim();
+  return ans && !ans.startsWith('（ここに');
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* 开始播放一个新序列（stopAll 内部已 ++playToken） */
+function startSeq(segments, cardEl, onDone) {
+  stopAll();
+  seq = segments; seqPos = 0; seqCardEl = cardEl || null; seqDone = onDone || null;
+  isPaused = false;
+  if (cardEl) cardEl.classList.add('playing');
+  runSeq(playToken);
+  syncPlayBtns();
+  return playToken;
+}
+
+/* 推进序列 */
+function runSeq(my) {
+  if (my !== playToken || !seq) return;
+  if (seqPos >= seq.length) {           // 全部播完
+    if (seqCardEl) seqCardEl.classList.remove('playing');
+    seqCardEl = null;
+    const done = seqDone;
+    seq = null; seqDone = null;
+    syncPlayBtns();
+    showSeekbar();          // 播完正常结束：隐藏进度条（否则会冻结在 100% 留在卡上）
+    if (done) done();
+    return;
+  }
+  const seg = seq[seqPos];
+  if (seg.kind === 'gap') {
+    gapEndAt = Date.now() + seg.ms;
+    gapTimer = setTimeout(() => {
+      gapTimer = null;
+      if (my !== playToken) return;
+      seqPos++; runSeq(my);
+    }, seg.ms);
+  } else {
+    playClip(seg, my, () => { if (my === playToken) { seqPos++; runSeq(my); } });
+  }
+}
+
+/* 播放单个 clip：mp3 优先，缺失或被拦截/失败时退回 TTS */
+function playClip(seg, my, next) {
+  const key = seg.id + seg.suffix;
+  if (audioKind[key] === 'file') {
+    usingTTS = false;
+    player.onended = () => { if (my === playToken) next(); };
+    player.onerror = () => { if (my === playToken) ttsClip(seg.text, seg.locale || currentSchool().locale, my, next); };
+    player.src = `${audioPath[key]}?v=${AUDIO_CACHE_BUST}`;
+    player.playbackRate = S.rate;
+    player.play().catch(() => { if (my === playToken) ttsClip(seg.text, seg.locale || currentSchool().locale, my, next); });
+    showSeekbar();
+  } else {
+    ttsClip(seg.text, seg.locale || currentSchool().locale, my, next);
+  }
+}
+
+function ttsClip(text, locale, my, next) {
+  usingTTS = true;
+  showSeekbar();
+  if (!('speechSynthesis' in window)) { next(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = locale || 'ja-JP';
+  if (jaVoice) u.voice = jaVoice;
+  u.rate = S.rate;
+  u.onend = () => { if (my === playToken) next(); };
+  u.onerror = () => { if (my === playToken) next(); };
+  speechSynthesis.speak(u);
+}
+
+/* 暂停（保留位置） */
+function pauseSeq() {
+  if (!seq || isPaused) return;
+  isPaused = true;
+  if (gapTimer) {                       // 暂停发生在 gap 间隔中
+    clearTimeout(gapTimer); gapTimer = null;
+    gapRemain = Math.max(0, gapEndAt - Date.now());
+  } else if (usingTTS) {
+    if ('speechSynthesis' in window) speechSynthesis.pause();
+  } else {
+    player.pause();
+  }
+  syncPlayBtns();
+}
+
+/* 继续（从暂停处接着播） */
+function resumeSeq() {
+  if (!seq || !isPaused) return;
+  isPaused = false;
+  const my = playToken;
+  if (gapRemain > 0) {                   // 在 gap 中暂停的：补足剩余间隔
+    const left = gapRemain; gapRemain = 0;
+    gapEndAt = Date.now() + left;
+    gapTimer = setTimeout(() => {
+      gapTimer = null;
+      if (my !== playToken) return;
+      seqPos++; runSeq(my);
+    }, left);
+  } else if (usingTTS) {
+    if ('speechSynthesis' in window) speechSynthesis.resume();
+  } else {
+    player.play().catch(() => {});
+  }
+  syncPlayBtns();
+}
+
+/* 同步所有「播放 / 暂停」按钮图标：仅正在播放的当前卡显示「暂停」 */
+function syncPlayBtns() {
+  const playing = isPlaying();
+  document.querySelectorAll('.playpausebtn').forEach(b => {
+    const showPause = playing && seqCardEl && b.closest('.card') === seqCardEl;
+    b.innerHTML = ic(showPause ? 'pause' : 'play');
+    b.title = b.ariaLabel = showPause ? '暂停' : '播放 问→答';
+  });
+}
+
+/* 快退 3 秒：仅对 mp3（高音質）有效，浏览器 TTS 不支持定位 */
+function rewind3() {
+  if (seq && !usingTTS && player.src) {
+    player.currentTime = Math.max(0, player.currentTime - 3);
+  } else if (usingTTS) {
+    toast('浏览器 TTS 不支持快退（高音質 mp3 才可以）');
+  } else {
+    toast('没有正在播放的音频');
+  }
+}
+
+/* ---- 播放进度条（跟读卡，仅 mp3 高音質播放时显示，可点按 / 拖动定位）---- */
+function fmtClock(s) {
+  if (!isFinite(s) || s < 0) s = 0;
+  s = Math.floor(s);
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+/* 把一条进度条归零（常显模式：非播放态显示 0:00 / 空条） */
+function resetBar(bar) {
+  if (!bar) return;
+  bar.querySelector('.seek-fill').style.width = '0%';
+  bar.querySelector('.seek-thumb').style.left = '0%';
+  bar.querySelector('.seek-time').textContent = '0:00 / 0:00';
+}
+/* 进度条默认常显；此函数只切换「当前播放卡」的 active 标记并驱动填充，
+   其余卡（含刚播完/停止的）归零。TTS 段不驱动填充（无法定位）。 */
+function showSeekbar() {
+  document.querySelectorAll('.seekbar.show').forEach(b => { b.classList.remove('show'); resetBar(b); });
+  if (seq && seqCardEl && !usingTTS) {
+    const bar = seqCardEl.querySelector('.seekbar');
+    if (bar) { bar.classList.add('show'); updateSeekFill(); }
+  }
+}
+/* 刷新进度条填充 / 滑块 / 时间（player 的 timeupdate、loadedmetadata 触发） */
+function updateSeekFill() {
+  if (!seqCardEl) return;
+  const bar = seqCardEl.querySelector('.seekbar.show');
+  if (!bar) return;
+  const d = player.duration, t = player.currentTime || 0;
+  const known = d && isFinite(d) && d > 0;
+  const frac = known ? Math.min(1, Math.max(0, t / d)) : 0;
+  bar.querySelector('.seek-fill').style.width = (frac * 100) + '%';
+  bar.querySelector('.seek-thumb').style.left = (frac * 100) + '%';
+  bar.querySelector('.seek-time').textContent = fmtClock(t) + ' / ' + (known ? fmtClock(d) : '--:--');
+}
+/* 点按 / 拖动进度条定位（仅对当前播放卡的 mp3 有效；暂停时也可拖，续播从新位置开始） */
+let seekDragging = false;
+function seekStart(ev, id) {
+  seekDragging = false;                                  // 清掉上一次可能残留的拖拽标志
+  if (usingTTS || !seq || gapTimer || gapRemain > 0) return;   // 间隔（gap）期间不允许定位，否则会被丢弃
+  if (seqCardEl !== el('card-' + id)) return;            // 只操作当前播放卡
+  const dur = player.duration;
+  if (!dur || !isFinite(dur) || dur <= 0) return;
+  ev.preventDefault();
+  const track = ev.currentTarget;
+  seekDragging = true;
+  const seekTo = e => {
+    if (!seq || usingTTS || !player.duration || !isFinite(player.duration)) return;
+    const r = track.getBoundingClientRect();
+    if (!r.width) return;                                // 卡片已被重渲染/隐藏（轨道脱离），停手
+    const frac = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+    player.currentTime = frac * player.duration;
+    updateSeekFill();
+  };
+  seekTo(ev);
+  const move = e => { if (seekDragging) seekTo(e); };
+  const up = () => {                                     // pointerup / pointercancel 都要清理（手机端中断手势会触发 cancel）
+    seekDragging = false;
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', up);
+    window.removeEventListener('pointercancel', up);
+  };
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', up);
+  window.addEventListener('pointercancel', up);
+}
+
+/* 仅听答案：把答案循环 N 次 */
+function playAnswerLoop(q, cardEl) {
+  const segs = [];
+  for (let i = 0; i < S.repeat; i++) {
+    segs.push({ kind: 'clip', id: q.id, text: q.a, suffix: '-a', locale: currentSchool().locale });
+    if (i < S.repeat - 1) segs.push({ kind: 'gap', ms: S.gap * 1000 });
+  }
+  startSeq(segs, cardEl, null);
+}
+
+/* 构造「问→（答）」重复 N 次的序列 */
+function buildCardSeq(q) {
+  const segs = [];
+  for (let i = 0; i < S.repeat; i++) {
+    segs.push({ kind: 'clip', id: q.id, text: q.q, suffix: '', locale: currentSchool().locale });
+    if (hasAnswer(q)) {
+      segs.push({ kind: 'gap', ms: 650 });
+      segs.push({ kind: 'clip', id: q.id, text: q.a, suffix: '-a', locale: currentSchool().locale });
+    }
+    if (i < S.repeat - 1) segs.push({ kind: 'gap', ms: S.gap * 1000 });
+  }
+  return segs;
+}
+
+/* 大播放键：空闲→从头播；播放中→暂停；暂停→继续（任务 1） */
+function togglePlayCard() {
+  if (seq && !isPaused) { pauseSeq(); return; }
+  if (seq && isPaused)  { resumeSeq(); return; }
+  playCurrentCard();
+}
+
+/* 播放当前卡片；循环模式下播完自动滑向下一张接着播 */
+function playCurrentCard() {
+  const sc = currentSchool();
+  const q = sc.questions[S.idx];
+  startSeq(buildCardSeq(q), el('card-' + q.id), () => {
+    if (!loopMode || S.mode !== 'shadow') return;
+    setTimeout(() => {
+      if (!loopMode || S.mode !== 'shadow' || seq) return;
+      const n = currentSchool().questions.length;
+      if (n === 1) { playCurrentCard(); return; }
+      goTo((S.idx + 1) % n);   // 滑动停稳后由 scroll 监听器接力播放
+    }, 800);
+  });
+}
+
+function toggleLoop() {
+  loopMode = !loopMode;
+  document.querySelectorAll('.loopbtn').forEach(b => b.classList.toggle('toggled', loopMode));
+  toast(loopMode ? '循环播放开启：播完自动下一题' : '循环播放已关闭');
+  if (loopMode && !seq) playCurrentCard();
+}
+
+function currentSchool() { return DATA.schools.find(s => s.id === S.school); }
+
+/* ---------- 顶栏 ---------- */
+function renderTop() {
+  const shadow = S.mode === 'shadow';
+  el('chips').style.display = shadow ? '' : 'none';
+  el('gearBtn').style.display = shadow ? '' : 'none';
+  el('counterBtn').style.display = shadow ? '' : 'none';
+  el('topTitle').textContent = shadow ? 'OpenInterview Coach' : (S.mode === 'interview' ? '模拟面试' : '回答思路');
+  if (!shadow) return;
+  el('chips').innerHTML = DATA.schools.map(sc =>
+    `<button class="chip ${sc.id === S.school ? 'active' : ''}" onclick="switchSchool('${sc.id}')">${sc.name}</button>`
+  ).join('');
+  updateProgress();
+}
+function updateProgress() {
+  const n = currentSchool().questions.length;
+  el('counterBtn').innerHTML = `${S.idx + 1} / ${n} ${ic('grid')}`;
+  const dots = el('dots');
+  if (dots.children.length !== n) {
+    dots.innerHTML = currentSchool().questions.map((q, i) =>
+      `<button onclick="goTo(${i})" aria-label="第${i + 1}题"></button>`).join('');
+  }
+  [...dots.children].forEach((d, i) => d.classList.toggle('on', i === S.idx));
+}
+function switchSchool(id) {
+  if (S.school === id) return;
+  S.school = id; S.idx = 0;
+  stopAll();
+  renderTop();
+  renderDeck();
+  if (loopMode) setTimeout(playCurrentCard, 400);
+}
+
+/* ---------- 跟读：卡片组 ---------- */
+/* 徽章：问题音频或答案音频任一为高音質 mp3 即显示「高音質」
+   （某些板块如研究計画書只配了答案音频，问题含多问法 <br> 不配问题音频）*/
+function badgeFor(id) {
+  if (audioKind[id] === 'file' || audioKind[id + '-a'] === 'file')
+    return `<span class="badge hq">${ic('check')}高音質</span>`;
+  return '<span class="badge">TTS</span>';
+}
+function renderDeck(keepPos) {
+  const sc = currentSchool();
+  el('deck').innerHTML = sc.questions.map((q, i) => {
+    const ph = !hasAnswer(q);
+    return `
+    <article class="card" id="card-${q.id}">
+      <div class="card-top">
+        <span class="qnum">Q${i + 1}</span>
+        ${badgeFor(q.id)}
+      </div>
+      <div class="card-q">${q.q}</div>
+      <div class="card-ctrl">
+        <button class="ibtn" ${ph ? 'disabled' : `onclick="playAnswerLoop(QTEXT['${q.id}'], el('card-${q.id}'))"`} title="只听答案" aria-label="只听答案">${ic('volume')}</button>
+        <button class="ibtn" onclick="rewind3()" title="快退3秒" aria-label="快退3秒">${ic('rew3')}</button>
+        <button class="ibtn big primary playpausebtn" onclick="togglePlayCard()" title="播放 问→答" aria-label="播放问题和答案">${ic('play')}</button>
+        <button class="ibtn" onclick="stopAll()" title="停止" aria-label="停止">${ic('stop')}</button>
+        <button class="ibtn loopbtn ${loopMode ? 'toggled' : ''}" onclick="toggleLoop()" title="循环播放：播完自动下一题" aria-label="循环播放">${ic('loop')}</button>
+      </div>
+      <div class="seekbar">
+        <div class="seek-track" onpointerdown="seekStart(event, '${q.id}')"><div class="seek-fill"></div><div class="seek-thumb"></div></div>
+        <span class="seek-time">0:00 / 0:00</span>
+      </div>
+      <div class="card-ans ${ph ? 'placeholder' : ''}"><span class="ans-label">MY ANSWER</span>${q.a || '（未填写答案）'}</div>
+    </article>`;
+  }).join('');
+  syncPlayBtns();
+  requestAnimationFrame(() => { scrollToCard(keepPos ? S.idx : 0, 'auto'); fitCardQuestions(); });
+}
+/* 问题框高度固定（上限 30% 卡高）：长问题自动缩小字号以适配，实在过长则框内滚动，
+   保证答案区始终可见。 */
+function fitCardQuestions() {
+  document.querySelectorAll('#deck .card-q').forEach(q => {
+    q.style.fontSize = '';                       // 复位到 CSS 基准（19px）
+    if (q.clientHeight < 8) return;              // 卡片未显示（deck 隐藏）时跳过
+    let fs = parseFloat(getComputedStyle(q).fontSize) || 19;
+    let guard = 0;
+    while (q.scrollHeight > q.clientHeight + 1 && fs > 11 && guard < 40) {
+      fs -= 1; q.style.fontSize = fs + 'px'; guard++;
+    }
+  });
+}
+let fitT = null;
+window.addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitCardQuestions, 150); }, { passive: true });
+function scrollToCard(i, behavior = 'smooth') {
+  const deck = el('deck');
+  const card = deck.children[i];
+  if (!card) return;
+  deck.scrollTo({ left: card.offsetLeft - (deck.clientWidth - card.clientWidth) / 2, behavior });
+}
+function goTo(i) {
+  const n = currentSchool().questions.length;
+  if (i < 0 || i >= n) return;
+  scrollToCard(i);
+}
+/* 滑动后更新进度，切题时停止播放 */
+let scrollT = null;
+el('deck').addEventListener('scroll', () => {
+  clearTimeout(scrollT);
+  scrollT = setTimeout(() => {
+    const deck = el('deck');
+    const cards = deck.children;
+    if (!cards.length) return;
+    let best = 0, bestDist = Infinity;
+    const center = deck.scrollLeft + deck.clientWidth / 2;
+    for (let i = 0; i < cards.length; i++) {
+      const d = Math.abs(cards[i].offsetLeft + cards[i].clientWidth / 2 - center);
+      if (d < bestDist) { bestDist = d; best = i; }
+    }
+    if (best !== S.idx) {
+      const wasPlaying = isPlaying();
+      S.idx = best;
+      stopAll();
+      // 划走时若在播放：无缝接上当前卡；循环模式下播完上一张滑过来也由这里接力
+      if (wasPlaying || loopMode) playCurrentCard();
+    }
+    updateProgress();
+  }, 80);
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (S.mode !== 'shadow') return;
+  if (e.key === 'ArrowRight') goTo(S.idx + 1);
+  if (e.key === 'ArrowLeft') goTo(S.idx - 1);
+});
+
+/* ---------- 抽屉 ---------- */
+function openSheet(name) {
+  if (name === 'overview') renderOverview();
+  el('scrim').classList.add('open');
+  el('sheet-' + name).classList.add('open');
+}
+function closeSheets() {
+  el('scrim').classList.remove('open');
+  document.querySelectorAll('.sheet').forEach(s => s.classList.remove('open'));
+}
+function renderOverview() {
+  const sc = currentSchool();
+  el('ovTitle').textContent = `${sc.name} · 共 ${sc.questions.length} 题`;
+  el('ovBody').innerHTML = sc.questions.map((q, i) => `
+    <button class="ov-item ${i === S.idx ? 'current' : ''}" onclick="jumpTo(${i})">
+      <span class="n">Q${i + 1}</span>
+      <span class="t">${q.q}</span>
+      <span class="dot ${hasAnswer(q) ? 'ok' : ''}" title="${hasAnswer(q) ? '已写回答' : '占位'}"></span>
+    </button>`).join('');
+}
+function jumpTo(i) {
+  closeSheets();
+  setTimeout(() => goTo(i), 120);
+}
+
+/* ---------- 模式切换 ---------- */
+function setMode(m) {
+  if (S.mode === m) return;
+  S.mode = m;
+  if (m !== 'shadow' && loopMode) {
+    loopMode = false;
+    document.querySelectorAll('.loopbtn').forEach(b => b.classList.remove('toggled'));
+  }
+  stopAll(); stopRecordingIfAny(); closeSheets();
+  el('navShadow').classList.toggle('active', m === 'shadow');
+  el('navInterview').classList.toggle('active', m === 'interview');
+  el('navGuide').classList.toggle('active', m === 'guide');
+  el('shadowView').style.display = m === 'shadow' ? '' : 'none';
+  el('interviewView').style.display = m === 'interview' ? '' : 'none';
+  el('guideView').style.display = m === 'guide' ? '' : 'none';
+  if (m === 'guide' && !guideRendered) { renderGuide(); guideRendered = true; }
+  if (m === 'shadow') { renderTop(); renderDeck(true); } else renderTop();
+}
+
+/* ---------- 回答思路 ---------- */
+function renderBody(t) {
+  const bold = s => s.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  let html = '', stack = [];
+  const top = () => stack[stack.length - 1];
+  const closeTo = n => { while (stack.length > n) html += (stack.pop() === 'ol' ? '</ol>' : '</ul>'); };
+  for (const raw of t.split('\n')) {
+    if (!raw.trim()) continue;
+    let m;
+    if (m = raw.match(/^(\d+)\.\s+(.*)/)) {
+      if (top() === 'sub') { html += '</ul>'; stack.pop(); }
+      if (top() !== 'ol') { closeTo(0); html += '<ol>'; stack.push('ol'); }
+      html += '<li>' + bold(m[2]) + '</li>';
+    } else if (m = raw.match(/^\s{2,}-\s+(.*)/)) {
+      if (top() !== 'sub') { html += '<ul class="sub">'; stack.push('sub'); }
+      html += '<li>' + bold(m[1]) + '</li>';
+    } else if (m = raw.match(/^-\s+(.*)/)) {
+      if (top() === 'sub') { html += '</ul>'; stack.pop(); }
+      if (top() !== 'ul') { closeTo(0); html += '<ul>'; stack.push('ul'); }
+      html += '<li>' + bold(m[1]) + '</li>';
+    } else {
+      closeTo(0); html += '<p>' + bold(raw) + '</p>';
+    }
+  }
+  closeTo(0);
+  return html;
+}
+function gRow(label, cls, inner) {
+  return `<div class="g-row"><span class="g-tag ${cls}">${label}</span><div class="g-lines">${inner}</div></div>`;
+}
+function renderGuide() {
+  const g = window.GUIDE_DATA;
+  if (!g) { el('guideView').innerHTML = '<div class="empty">未找到 data/guide.js</div>'; return; }
+  let html = `<div class="g-head"><h2>${ic('book')}${g.title}</h2><p>${g.note}</p></div>`;
+  html += `<div class="g-toc">` +
+    g.chapters.map((c, ci) => `<a href="#gch-${ci}">${ci + 1} · ${c.title}</a>`).join('') +
+    `<button class="btn" onclick="toggleAllGuide(true)">全部展开</button>` +
+    `<button class="btn" onclick="toggleAllGuide(false)">全部收起</button></div>`;
+  g.chapters.forEach((c, ci) => {
+    html += `<div class="g-chapter"><h3 id="gch-${ci}"><span class="cnum">${ci + 1}</span>${c.title}</h3>`;
+    c.items.forEach((it, ii) => {
+      html += `<details class="g-item"><summary><span class="gq">Q${ci + 1}.${ii + 1}</span>${it.title}<span class="arrow">${ic('chevron')}</span></summary><div class="g-body">`;
+      html += gRow('中文', 'zh', it.zh.map(x => `<div>${x}</div>`).join(''));
+      html += gRow('日文', 'ja', it.ja.map((x, k) =>
+        `<div class="g-ja-line"><button class="play" title="播放" onclick="playGuideJa(${ci},${ii},${k})">${ic('volume')}</button><span>${x}</span></div>`).join(''));
+      if (it.en && it.en.length) html += gRow('英文', 'en', it.en.map(x => `<div>${x}</div>`).join(''));
+      if (it.intent) html += gRow('意图', 'intent', `<div>${it.intent}</div>`);
+      for (const b of it.blocks) html += `<div class="g-block"><h4>${b.h}</h4>${renderBody(b.t)}</div>`;
+      html += `</div></details>`;
+    });
+    html += `</div>`;
+  });
+  el('guideView').innerHTML = html;
+}
+function toggleAllGuide(open) {
+  document.querySelectorAll('#guideView details.g-item').forEach(d => d.open = open);
+}
+function playGuideJa(ci, ii, k) {
+  stopAll();
+  ttsClip(window.GUIDE_DATA.chapters[ci].items[ii].ja[k], currentSchool().locale, playToken, () => {});
+}
+
+/* ---------- 模拟面试 ---------- */
+let deckIv = [], deckPos = -1;
+const takesByQ = {};
+
+function startInterview() {
+  const all = el('scope').value === 'all';
+  deckIv = [];
+  for (const sc of DATA.schools) {
+    if (!all && sc.id !== S.school) continue;
+    for (const q of sc.questions) deckIv.push({ ...q, school: sc.name, locale: sc.locale });
+  }
+  for (let i = deckIv.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deckIv[i], deckIv[j]] = [deckIv[j], deckIv[i]];
+  }
+  deckPos = -1;
+  el('ivStage').style.display = '';
+  el('ivEmpty').style.display = 'none';
+  nextIvQuestion();
+}
+
+function curIv() { return deckIv[deckPos]; }
+
+async function nextIvQuestion() {
+  stopAll(); stopRecordingIfAny();
+  deckPos++;
+  if (deckPos >= deckIv.length) {
+    toast('本轮全部问题已抽完！点「开始」再来一轮');
+    deckPos = deckIv.length - 1;
+    return;
+  }
+  const q = curIv();
+  el('fcProgress').textContent = `第 ${deckPos + 1} / ${deckIv.length} 题`;
+  el('fcSchool').textContent = q.school;
+  el('fcQ').textContent = q.q;
+  el('ivAnswer').textContent = q.a || '（未填写答案）';
+  el('ivAnswerBox').classList.add('hide');
+  el('transcript').innerHTML = '';
+  renderTakes();
+  await playCurrentIv();
+  if (el('autoRec').checked && deckIv[deckPos] === q) startRecording();
+}
+
+function playCurrentIv() {
+  return new Promise(resolve => {
+    const q = curIv();
+    startSeq([{ kind: 'clip', id: q.id, text: q.q, suffix: '', locale: q.locale }], null, resolve);
+  });
+}
+
+function toggleIvAnswer() { el('ivAnswerBox').classList.toggle('hide'); }
+
+/* ---------- 录音 ---------- */
+let mediaStream = null, recorder = null, chunks = [], recTimer = null, recStart = 0;
+let recognition = null;
+
+function fmtTime(s) { return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
+
+async function startRecording() {
+  if (recorder && recorder.state === 'recording') return;
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {
+    toast('无法访问麦克风：请检查权限，且需通过 localhost 打开本页面');
+    return;
+  }
+  const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+  recorder = new MediaRecorder(mediaStream, mime ? { mimeType: mime } : undefined);
+  chunks = [];
+  recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.onstop = onRecordingStop;
+  recorder.start();
+  recStart = Date.now();
+  const btn = el('recBtn');
+  btn.classList.add('on');
+  btn.title = btn.ariaLabel = '停止录音';
+  recTimer = setInterval(() => {
+    btn.innerHTML = `${ic('stop')}<span class="rec-timer">${fmtTime(Math.floor((Date.now() - recStart) / 1000))}</span>`;
+  }, 250);
+  btn.innerHTML = `${ic('stop')}<span class="rec-timer">00:00</span>`;
+  startRecognition();
+}
+
+function stopRecordingIfAny() {
+  if (recorder && recorder.state === 'recording') recorder.stop();
+}
+function toggleRecord() {
+  (recorder && recorder.state === 'recording') ? recorder.stop() : startRecording();
+}
+
+function onRecordingStop() {
+  clearInterval(recTimer);
+  const btn = el('recBtn');
+  btn.classList.remove('on');
+  btn.innerHTML = ic('mic');
+  btn.title = btn.ariaLabel = '录音';
+  if (mediaStream) { mediaStream.getTracks().forEach(t => t.stop()); mediaStream = null; }
+  stopRecognition();
+  const q = curIv();
+  if (!q || !chunks.length) return;
+  const blob = new Blob(chunks, { type: chunks[0].type || 'audio/webm' });
+  const ext = (blob.type.includes('mp4')) ? 'm4a' : 'webm';
+  const url = URL.createObjectURL(blob);
+  if (!takesByQ[q.id]) takesByQ[q.id] = [];
+  const n = takesByQ[q.id].length + 1;
+  takesByQ[q.id].push({ url, name: `${q.id}_take${n}.${ext}` });
+  renderTakes();
+}
+
+function renderTakes() {
+  const q = curIv();
+  const list = (q && takesByQ[q.id]) || [];
+  el('takes').innerHTML = list.map((t, i) => `
+    <div class="take">
+      <span class="tnum">Take ${i + 1}</span>
+      <audio controls src="${t.url}"></audio>
+      <a href="${t.url}" download="${t.name}">${ic('download')} 下载</a>
+    </div>`).join('');
+}
+
+/* ---------- 实时识别字幕（Chrome） ---------- */
+function startRecognition() {
+  if (!el('liveStt').checked) return;
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { toast('此浏览器不支持语音识别，请用 Chrome'); return; }
+  recognition = new SR();
+  recognition.lang = 'ja-JP';
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  let finalText = '';
+  recognition.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalText += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    el('transcript').innerHTML = finalText + '<span class="interim">' + interim + '</span>';
+  };
+  recognition.onerror = () => {};
+  try { recognition.start(); } catch (e) {}
+}
+function stopRecognition() {
+  if (recognition) { try { recognition.stop(); } catch (e) {} recognition = null; }
+}
+
+/* ---------- 初始化 ---------- */
+renderTop();
+renderDeck();
+probeAudio();
+if (location.protocol === 'file:') {
+  toast('提示：直接打开文件时无法使用高音质音频和录音，请通过本地开发服务器打开本页面');
+}
+</script>
+</body>
+</html>
+

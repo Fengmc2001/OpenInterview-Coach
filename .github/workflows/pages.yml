@@ -39,6 +39,9 @@ jobs:
       - name: Validate public content and audio
         run: node scripts/validate_content.mjs --require-audio
 
+      - name: Check generated browser data
+        run: npm run content:check
+
       - name: Run privacy and secret gate
         run: node scripts/privacy_gate.mjs
 

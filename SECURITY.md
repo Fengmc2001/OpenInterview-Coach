@@ -2,11 +2,11 @@
 
 ## Supported boundary / 支持范围 / 対応範囲
 
-**English.** The maintained reference deployment is a static browser application. It serves public question text, public example answers, styles, scripts, and pre-generated audio. It does not need a database, authentication token, OpenAI API key, microphone permission, or response-upload endpoint.
+**English.** The maintained reference deployment is a static browser application. It serves question text, sample answers, styles, scripts, and pre-generated audio. It does not need a database, authentication token, OpenAI API key, or response-upload endpoint. Microphone permission is requested only when a user starts a practice recording.
 
-**简体中文。** 本项目维护的参考部署是静态浏览器应用，仅提供公开问题、公开示例回答、样式、脚本与预生成音频。它不需要数据库、身份验证令牌、OpenAI API Key、麦克风权限或回答上传接口。
+**简体中文。** 本项目维护的参考部署是静态浏览器应用，提供问题、参考回答、样式、脚本与预生成音频。它不需要数据库、身份验证令牌、OpenAI API Key 或回答上传接口。只有用户主动开始练习录音时，浏览器才会请求麦克风权限。
 
-**日本語。** 保守対象の参照デプロイは静的ブラウザーアプリです。公開質問、公開回答例、スタイル、スクリプト、生成済み音声だけを配信し、データベース、認証トークン、OpenAI API キー、マイク権限、回答アップロード用エンドポイントを必要としません。
+**日本語。** 保守対象の参照デプロイは静的ブラウザーアプリです。質問、回答例、スタイル、スクリプト、生成済み音声を配信し、データベース、認証トークン、OpenAI API キー、回答アップロード用エンドポイントを必要としません。マイク権限を求めるのは、ユーザーが練習録音を開始したときだけです。
 
 ## Secrets / 密钥 / シークレット
 

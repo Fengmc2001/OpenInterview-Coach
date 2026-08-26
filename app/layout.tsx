@@ -6,7 +6,7 @@ const siteUrl = process.env.SITE_URL ?? 'http://localhost:3000';
 export const metadata: Metadata = {
   title: 'OpenInterview Coach',
   description:
-    'A privacy-first, multilingual, open-source interview practice website with reusable question decks and AI-generated audio.',
+    'A multilingual interview practice template with editable question decks, sample answers, and generated audio.',
   metadataBase: new URL(siteUrl),
   icons: {
     icon: [
@@ -17,14 +17,14 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'OpenInterview Coach',
-    description: 'Practice interviews in Japanese, English, and Chinese with privacy-safe prompts and AI-generated audio.',
+    description: 'Practice with question decks, sample answers, and audio in Japanese, English, and Chinese.',
     images: ['/og.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'OpenInterview Coach',
-    description: 'Practice interviews in Japanese, English, and Chinese with privacy-safe prompts and AI-generated audio.',
+    description: 'Practice with question decks, sample answers, and audio in Japanese, English, and Chinese.',
     images: ['/og.png'],
   },
 };

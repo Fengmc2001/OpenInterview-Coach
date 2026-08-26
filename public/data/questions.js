@@ -1,0 +1,161 @@
+window.INTERVIEW_DATA = {
+  "version": 1,
+  "schools": [
+    {
+      "id": "ja",
+      "name": "日本語",
+      "locale": "ja-JP",
+      "questions": [
+        {
+          "id": "ja-01",
+          "q": "1分程度で自己紹介をお願いします。",
+          "a": "はい。学部では情報科学を学び、授業の制作課題や卒業研究を通して、利用者の行動をデータから分析することに関心を持つようになりました。現在は、オンライン学習で通知の出し方が学習の継続にどう影響するかを調べています。大学院では、分析方法とユーザー調査の両方を学び、使いやすい学習支援につなげたいと考えています。"
+        },
+        {
+          "id": "ja-02",
+          "q": "なぜ大学院に進学したいのですか。",
+          "a": "卒業研究を進める中で、自分で問いを立て、試行錯誤しながら答えを探す面白さを知ったからです。一方で、今の自分には調査設計や統計の知識がまだ足りないと感じています。大学院ではこれらを体系的に学び、教員や学生との議論を通して、自分の研究をより深めたいと考えています。"
+        },
+        {
+          "id": "ja-03",
+          "q": "数ある大学の中で、なぜ本学を志望したのですか。",
+          "a": "志望した一番の理由は、データ分析だけでなく、実際の利用者を対象にした調査まで一つの研究として進められる点です。研究室の紹介や公開されている論文を読み、私が取り組みたいテーマと近いと感じました。また、関連分野の授業も選べるため、技術と人の両面から学べると考えています。"
+        },
+        {
+          "id": "ja-04",
+          "q": "あなたの研究計画を、専門外の人にも分かるように説明してください。",
+          "a": "私の研究では、オンライン学習サービスの通知方法と、学習を続ける割合の関係を調べます。通知の回数を増やせばよいとは限らず、多すぎるとかえって負担になる可能性があります。そこで、通知のタイミングや文面が異なる条件を比較し、利用記録と簡単なアンケートから、どの方法が無理なく継続しやすいかを検討します。"
+        },
+        {
+          "id": "ja-05",
+          "q": "この研究の新規性と、期待される貢献について教えてください。",
+          "a": "これまでの研究では、通知がある場合とない場合を比べるものが多いのですが、私の研究では、通知のタイミングと文面の組み合わせまで分けて比較します。通知が行動に影響する仕組みをより細かく理解するとともに、利用者の負担を増やさずに学習を支える方法を考える材料を示したいです。"
+        },
+        {
+          "id": "ja-06",
+          "q": "研究方法を選んだ理由と、その限界を説明してください。",
+          "a": "通知の条件による違いを確認するため、利用記録の比較とアンケートを組み合わせます。記録だけでは利用者が通知をどう感じたか分からず、アンケートだけでは実際の行動を正確に捉えにくいからです。ただし、対象者が学生に偏ることや、短い調査期間では長期的な効果が分からないことが限界です。"
+        },
+        {
+          "id": "ja-07",
+          "q": "チームで意見が対立したとき、どのように対応しますか。",
+          "a": "授業のグループ制作で、機能を増やすか、完成度を優先するかで意見が分かれたことがあります。私はまず、締切までに必要な部分を全員で確認し、必須機能と追加機能を分けることを提案しました。そのうえで試作品を見ながら話し合い、最終的には基本機能を先に完成させました。この経験から、意見そのものよりも、判断の基準を共有することが大切だと学びました。"
+        },
+        {
+          "id": "ja-08",
+          "q": "計画どおりに進まなかった経験と、そこから学んだことを教えてください。",
+          "a": "卒業研究の予備調査で、予定していた人数の回答が集まらなかったことがあります。原因を確認すると、質問数が多く、回答に時間がかかることが分かりました。そこで、研究目的に直接関係しない項目を減らし、案内文も分かりやすく直しました。結果として回答数が増え、計画が遅れたときほど、原因を具体的に確かめてから修正することが重要だと学びました。"
+        },
+        {
+          "id": "ja-09",
+          "q": "修了後の進路と、研究を通して実現したいことを教えてください。",
+          "a": "修了後は、教育や学習支援に関わるサービスの開発や改善に携わりたいです。研究で身につけた分析力を使い、利用者の声とデータの両方を見ながら、使いやすい仕組みを提案できる人を目指します。将来は、研究と現場の間をつなぎ、効果を確かめながらサービスを改善できるようになりたいです。"
+        }
+      ]
+    },
+    {
+      "id": "en",
+      "name": "English",
+      "locale": "en-US",
+      "questions": [
+        {
+          "id": "en-01",
+          "q": "Please introduce yourself in about one minute.",
+          "a": "I studied environmental engineering and became interested in how the design of public spaces affects everyday life. In my final-year project, I worked with temperature measurements and observation data from several campus spaces. That experience led me to ask how shade and heat affect the time people choose to spend outdoors. I now want to strengthen both my fieldwork and data-analysis skills."
+        },
+        {
+          "id": "en-02",
+          "q": "Why do you want to pursue graduate study?",
+          "a": "My undergraduate project raised questions that I could not answer within a short study. I could see a pattern in the data, but I did not have enough time or the right design to separate weather effects from differences between locations. Graduate study would let me investigate the question properly and learn from people with more experience in field research and urban design."
+        },
+        {
+          "id": "en-03",
+          "q": "Why did you choose this program?",
+          "a": "I chose this program because it brings environmental measurement and urban design into the same research setting. I was especially interested in the chance to combine field data with observations of how people use public space. The project-based courses would also let me test ideas with students from other fields, which is important for the kind of work I want to do."
+        },
+        {
+          "id": "en-04",
+          "q": "Please explain your research plan to someone outside your field.",
+          "a": "My project asks a simple question: when the weather is hot, does shade change how people use outdoor public spaces? I plan to record temperature and shade conditions at several sites, then observe how many people stop and how long they stay. By comparing similar sites at the same time of day, I hope to identify design features that make outdoor spaces more comfortable."
+        },
+        {
+          "id": "en-05",
+          "q": "What is new about your proposed research, and what do you hope it will contribute?",
+          "a": "Many studies map urban heat across a large area. My project looks instead at the smaller choices people make within a single public space, such as whether they sit in the sun or move to a shaded area. Linking those observations with local temperature measurements could give designers more practical information about where shade makes the greatest difference."
+        },
+        {
+          "id": "en-06",
+          "q": "Why did you choose this method, and what are its limitations?",
+          "a": "I chose to combine sensor measurements with observation because neither method tells the whole story on its own. Temperature readings cannot show how people respond, while observation cannot tell me exactly what conditions they experienced. The main limitation is that behavior may also be affected by events, noise, or personal preference. I will record those factors where possible and avoid making claims that the data cannot support."
+        },
+        {
+          "id": "en-07",
+          "q": "How do you handle disagreement within a team?",
+          "a": "During a group design project, two teammates disagreed about whether we should spend our remaining time collecting more data or improving the final prototype. I asked each person what risk they were trying to avoid, then suggested a short data check before we decided. The check showed that the main pattern was already clear, so we focused on the prototype. That experience taught me to turn a disagreement into a question the team can test."
+        },
+        {
+          "id": "en-08",
+          "q": "Tell us about a time when something did not go to plan. What did you learn?",
+          "a": "A fieldwork session once failed because several temperature sensors had not been calibrated correctly. Rather than use doubtful readings, I documented the problem, repeated the calibration, and rescheduled the affected measurements. I also added a short equipment checklist for later sessions. We lost time, but I learned that reliable data is more important than protecting the original schedule."
+        },
+        {
+          "id": "en-09",
+          "q": "What do you hope to do after graduation, and what impact do you want your research to have?",
+          "a": "After graduation, I would like to work in urban or environmental planning, ideally in a role that connects research with design decisions. I want to help teams use field evidence when deciding where to invest in cooling, shade, and other public-space improvements. In the long term, I hope to lead projects that are technically sound and genuinely useful to the communities they serve."
+        }
+      ]
+    },
+    {
+      "id": "zh",
+      "name": "中文",
+      "locale": "zh-CN",
+      "questions": [
+        {
+          "id": "zh-01",
+          "q": "请用一分钟左右做个自我介绍。",
+          "a": "我本科读的是工业工程。做课程项目时，我曾经和同学一起记录食堂高峰期的排队情况，并尝试用数据找出拥堵出现的原因。这段经历让我对服务流程和用户行为之间的关系产生了兴趣。读研后，我想进一步学习实验设计和数据分析，把研究做得更扎实。"
+        },
+        {
+          "id": "zh-02",
+          "q": "你为什么想继续读研究生？",
+          "a": "本科项目让我发现，看到一个现象和真正解释它之间还有很大差距。例如，排队时间变短，可能是流程改进，也可能只是当天人数较少。为了学会更可靠地判断原因，我希望继续读研，系统学习研究设计，并在老师的指导下完成更完整的研究。"
+        },
+        {
+          "id": "zh-03",
+          "q": "你为什么选择申请这个项目？",
+          "a": "我选择这个项目，主要是因为它既重视定量分析，也有和实际场景结合的研究训练。我看过课程设置和研究方向，其中关于服务系统和行为数据的内容与我的兴趣很接近。另外，我也希望在小组项目中接触不同专业的同学，学习从更多角度看同一个问题。"
+        },
+        {
+          "id": "zh-04",
+          "q": "请向非本专业的人介绍一下你的研究计划。",
+          "a": "我的研究想解决一个很日常的问题：高峰期排队时，如果人们能提前看到各窗口的预计等待时间，会不会主动选择更空的窗口，从而缩短整体排队时间。我计划先记录没有提示时的排队情况，再设置简单的等待时间显示，并比较前后的变化。除了平均等待时间，我也会关注各窗口之间是否变得更均衡。"
+        },
+        {
+          "id": "zh-05",
+          "q": "你的研究有哪些新意？你希望它能带来什么贡献？",
+          "a": "过去的研究常关注如何提高单个窗口的处理速度，我更想研究信息提示能否改变人们的选择，让现有资源用得更均衡。这个办法不一定需要增加设备或人员，实施成本相对较低。如果效果稳定，它可以给学校食堂、办事大厅等场景提供一种简单的改进思路。"
+        },
+        {
+          "id": "zh-06",
+          "q": "你为什么选择这种研究方法？它有哪些局限？",
+          "a": "我准备采用前后对照的现场研究，因为这个问题与真实环境中的选择行为有关。系统记录可以提供等待时间，现场观察则能帮助我判断是否出现了临时关闭窗口等异常情况。不过，不同日期的客流和菜单也会影响结果，所以我会尽量选择可比的时间段，并把这些因素记录下来。"
+        },
+        {
+          "id": "zh-07",
+          "q": "团队成员意见不一致时，你会怎么处理？",
+          "a": "一次小组作业中，我们对报告重点有不同意见：有人想展示更多模型结果，有人希望把结论讲得更容易理解。我先请大家明确这份报告的听众和评分要求，然后选了一页最关键的结果做示例。看过示例后，大家同意正文保留核心图表，其他结果放到附录。这样既保证了准确性，也让报告更清楚。"
+        },
+        {
+          "id": "zh-08",
+          "q": "请讲一次计划没有顺利推进的经历。你从中学到了什么？",
+          "a": "我曾经负责一次问卷调查，开始后才发现不少题目的表述容易让人误解。为了避免继续收集质量不高的数据，我先暂停发放，和组员逐题检查，并找了几位同学试填。修改后，我们重新安排了进度。虽然晚了几天，但后面的回答质量明显更好。这让我明白，发现设计有问题时，及时停下来修正比勉强按原计划推进更重要。"
+        },
+        {
+          "id": "zh-09",
+          "q": "毕业后你想做什么工作？希望自己的研究产生什么影响？",
+          "a": "毕业后，我希望从事运营分析或服务流程改进方面的工作，把研究中学到的方法用到实际业务中。刚开始工作时，我想先把数据分析和现场沟通这两项能力练好，不只告诉团队发生了什么，也能一起找出可行的改进办法。以后如果有机会，我希望负责从发现问题到评估效果的完整项目。"
+        }
+      ]
+    }
+  ]
+};

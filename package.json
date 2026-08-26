@@ -1,7 +1,7 @@
 {
   "name": "openinterview-coach",
   "version": "0.1.0",
-  "description": "Privacy-first multilingual interview practice with static AI-generated audio.",
+  "description": "A multilingual interview practice template with editable question decks, sample answers, and generated audio.",
   "private": true,
   "license": "MIT",
   "homepage": "https://fengmc2001.github.io/OpenInterview-Coach/",
@@ -20,9 +20,11 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build && node scripts/prune_sites_server_assets.mjs",
-    "build:pages": "vite build --config vite.pages.config.ts",
+    "content:export": "node scripts/export_browser_data.mjs",
+    "content:check": "node scripts/export_browser_data.mjs --check",
+    "dev": "npm run content:export && vinext dev",
+    "build": "npm run content:export && vinext build && node scripts/prune_sites_server_assets.mjs",
+    "build:pages": "npm run content:export && vite build --config vite.pages.config.ts",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern pages-dist --ignore-pattern .next --ignore-pattern .vinext --ignore-pattern .wrangler",
     "validate": "node scripts/validate_content.mjs",
@@ -31,7 +33,7 @@
     "audio:generate": "python3 scripts/generate_audio.py",
     "docs:check": "node scripts/check_trilingual_readme.mjs",
     "audit:prod": "npm audit --omit=dev",
-    "test": "npm run validate && npm run privacy:scan && npm run docs:check && npm run audit:prod && npm run lint && npm run build:pages && npm run verify:pages"
+    "test": "npm run validate && npm run content:check && npm run privacy:scan && npm run docs:check && npm run audit:prod && npm run lint && npm run build:pages && npm run verify:pages"
   },
   "dependencies": {
     "next": "16.3.3",

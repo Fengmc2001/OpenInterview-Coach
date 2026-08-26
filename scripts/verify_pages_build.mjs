@@ -38,7 +38,7 @@ function sha256(path) {
 
 function localReferencePath(reference, htmlPath, buildDirectory, base) {
   const clean = reference.split('#', 1)[0].split('?', 1)[0];
-  if (!clean || /^(?:[a-z]+:|\/\/|#)/iu.test(clean)) return null;
+  if (!clean || clean.includes('${') || /^(?:[a-z]+:|\/\/|#)/iu.test(clean)) return null;
   if (clean.startsWith('/')) {
     if (!clean.startsWith(base)) throw new Error(`Root asset ${clean} is outside configured base ${base}.`);
     return resolve(buildDirectory, clean.slice(base.length));
@@ -50,6 +50,21 @@ function main() {
   const options = parseArguments();
   const indexPath = resolve(options.directory, 'index.html');
   if (!existsSync(indexPath)) throw new Error(`Missing Pages entry point: ${indexPath}`);
+  const coachPath = resolve(options.directory, 'coach.html');
+  if (!existsSync(coachPath)) throw new Error(`Missing shared interview application: ${coachPath}`);
+  const coachHtml = readFileSync(coachPath, 'utf8');
+  const coachMarkers = [
+    '--paper:    #F4F1E6',
+    'id="shadowView"',
+    'id="interviewView"',
+    'id="guideView"',
+    'const player = new Audio()',
+    'data/questions.js',
+    'data/guide.js',
+  ];
+  for (const marker of coachMarkers) {
+    if (!coachHtml.includes(marker)) throw new Error(`Shared interview application is missing ${marker}.`);
+  }
   const files = walk(options.directory);
   if (files.length < 3) throw new Error('Pages build contains too few files to be a complete application.');
 

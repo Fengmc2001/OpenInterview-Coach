@@ -2,22 +2,24 @@
 
 ## Scope / 范围 / 対象範囲
 
-**English.** OpenInterview Coach is a static-content interview rehearsal application with two presentation adapters. The Vinext adapter supports ChatGPT Sites, while a Vite static entry supports GitHub Pages. Both consume the same reviewed question data and public audio assets.
+**English.** OpenInterview Coach is a static interview-practice application with two build adapters. Vinext supports ChatGPT Sites, while Vite produces the GitHub Pages build. Both adapters display the same `public/coach.html` application and the same content and audio files.
 
-**简体中文。** OpenInterview Coach 是一个静态内容面试练习应用，包含两种展示适配层：Vinext 适配 ChatGPT Sites，Vite 静态入口适配 GitHub Pages。两者共用同一份经过审查的题库数据与公开音频资源。
+**简体中文。** OpenInterview Coach 是一个静态面试练习应用，包含两种构建适配层：Vinext 用于 ChatGPT Sites，Vite 用于生成 GitHub Pages 版本。两种构建都会展示同一个 `public/coach.html` 应用，并共用相同的题库和音频。
 
-**日本語。** OpenInterview Coach は、2 種類の表示アダプターを持つ静的コンテンツ型の面接練習アプリです。Vinext アダプターは ChatGPT Sites、Vite の静的エントリは GitHub Pages に対応し、どちらも同じレビュー済み質問データと公開音声アセットを利用します。
+**日本語。** OpenInterview Coach は、2 種類のビルドアダプターを持つ静的な面接練習アプリです。Vinext は ChatGPT Sites、Vite は GitHub Pages 版を生成します。どちらも同じ `public/coach.html` アプリと、同じ質問・音声ファイルを表示します。
 
 ```text
-                     content/questions.json
-                               |
-                 validate + privacy scan
-                               |
-                 shared React coach interface
-                         /              \
-                Vinext adapter       Vite static entry
-                         |              |
-                  ChatGPT Sites     GitHub Pages
+             content/questions.json + content/guide.json
+                                  |
+                         content:export
+                                  |
+        public/data/*.js -> public/coach.html <- public/audio/*.mp3
+                                  |
+                      shared presentation wrapper
+                           /                 \
+                     Vinext build          Vite build
+                           |                 |
+                    ChatGPT Sites       GitHub Pages
 
 local OPENAI_API_KEY -> audio generator -> public/audio/*.mp3
           (build-time only; never available to either browser runtime)
@@ -27,17 +29,16 @@ local OPENAI_API_KEY -> audio generator -> public/audio/*.mp3
 
 - **English:** One reviewed content source feeds every deployment target.<br>**简体中文：**每个部署目标都读取同一份经过审查的内容源。<br>**日本語：**すべてのデプロイ先が、同じレビュー済みコンテンツソースを利用します。
 - **English:** The deployed browser runtime is static and has no secret-bearing backend.<br>**简体中文：**部署后的浏览器运行时是静态的，不包含持有密钥的后端。<br>**日本語：**公開後のブラウザー実行環境は静的で、秘密情報を保持するバックエンドを持ちません。
-- **English:** Stable question IDs connect content, audio files, and progress state.<br>**简体中文：**稳定的问题 ID 负责关联内容、音频文件和练习进度。<br>**日本語：**安定した質問 ID が、コンテンツ、音声ファイル、進捗状態を結び付けます。
+- **English:** Stable question IDs connect each card to its question and answer audio.<br>**简体中文：**稳定的问题 ID 负责关联每张卡片、问题音频和回答音频。<br>**日本語：**安定した質問 ID が、各カードと質問・回答音声を結び付けます。
 - **English:** Generated artifacts are reproducible derivatives, never hand-edited sources.<br>**简体中文：**生成产物是可复现的派生文件，不是手工编辑的源文件。<br>**日本語：**生成物は再現可能な派生ファイルであり、手作業で編集するソースではありません。
-- **English:** Public history begins from a privacy-reviewed baseline instead of a private repository fork.<br>**简体中文：**公开历史从经过隐私审查的基线开始，而不是从私人仓库 Fork 而来。<br>**日本語：**公開履歴は、非公開リポジトリのフォークではなく、プライバシーレビュー済みの基準点から開始します。
 
 ## Runtime boundaries / 运行时边界 / 実行時境界
 
-**English.** The client loads the question JSON and audio manifest as public assets. It maintains only presentation state such as the current deck, current question, answer visibility, playback state, and local progress. The reference implementation does not transmit spoken responses or typed notes.
+**English.** The browser loads generated question and guide scripts plus the audio files. It keeps the current deck, question, playback sequence, interview queue, and session recordings in the page. Recordings can be played or downloaded during the session and are not uploaded by the reference implementation.
 
-**简体中文。** 客户端把题库 JSON 与音频清单作为公开资源加载，只维护当前题库、当前问题、答案显示、播放状态和本地进度等展示状态。参考实现不会传输口述回答或输入笔记。
+**简体中文。** 浏览器会加载生成后的题库、回答思路脚本和音频文件，并在页面中维护当前语言、问题、播放序列、模拟面试队列和本次会话的录音。录音可以在会话中回放或下载，参考实现不会上传录音。
 
-**日本語。** クライアントは質問 JSON と音声マニフェストを公開アセットとして読み込みます。保持するのは、現在のデッキ、質問、回答表示、再生状態、ローカル進捗などの表示状態だけです。参照実装は、発話回答や入力メモを送信しません。
+**日本語。** ブラウザーは生成済みの質問・回答ガイド用スクリプトと音声ファイルを読み込みます。現在の言語、質問、再生シーケンス、模擬面接の順番、セッション中の録音をページ内で管理します。録音はその場で再生・保存でき、参照実装からアップロードされません。
 
 **English.** Playback prefers a pre-generated MP3 associated with the question ID. If that asset is unavailable, the interface may use the browser's speech-synthesis API. Browser speech is a fallback and can differ by operating system, installed voices, and accessibility settings.
 
