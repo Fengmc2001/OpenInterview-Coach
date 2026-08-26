@@ -1,0 +1,61 @@
+{
+  "name": "openinterview-coach",
+  "version": "0.1.0",
+  "description": "Privacy-first multilingual interview practice with static AI-generated audio.",
+  "private": true,
+  "license": "MIT",
+  "homepage": "https://fengmc2001.github.io/OpenInterview-Coach/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fengmc2001/OpenInterview-Coach.git"
+  },
+  "keywords": [
+    "interview-practice",
+    "multilingual",
+    "text-to-speech",
+    "github-pages",
+    "chatgpt-sites"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vinext dev",
+    "build": "vinext build",
+    "build:pages": "vite build --config vite.pages.config.ts",
+    "start": "vinext start",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern pages-dist --ignore-pattern .next --ignore-pattern .vinext --ignore-pattern .wrangler",
+    "validate": "node scripts/validate_content.mjs",
+    "privacy:scan": "node scripts/privacy_gate.mjs",
+    "verify:pages": "node scripts/verify_pages_build.mjs",
+    "audio:generate": "python3 scripts/generate_audio.py",
+    "docs:check": "node scripts/check_trilingual_readme.mjs",
+    "audit:prod": "npm audit --omit=dev",
+    "test": "npm run validate && npm run privacy:scan && npm run docs:check && npm run audit:prod && npm run lint && npm run build:pages && npm run verify:pages"
+  },
+  "dependencies": {
+    "next": "16.3.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.54.0",
+    "@cloudflare/workers-types": "5.20260826.1",
+    "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.34",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.3.3",
+    "react-server-dom-webpack": "19.2.8",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "1.0.0-beta.8",
+    "vite": "8.2.2",
+    "wrangler": "4.126.0"
+  },
+  "type": "module"
+}

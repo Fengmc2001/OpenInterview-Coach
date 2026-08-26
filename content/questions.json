@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "OpenInterview Coach",
+    "contentNotice": "All questions and sample answers are fictional, generic practice material. Replace the sample answers with your own experience before using them in a real interview.",
+    "audioDisclosure": "The bundled MP3 files are AI-generated voices created with OpenAI text-to-speech."
+  },
+  "decks": [
+    {
+      "id": "ja",
+      "label": "日本語",
+      "locale": "ja-JP",
+      "name": "大学院・研究面接",
+      "description": "大学院入試や研究面接でよく使われる、個人情報を含まない練習用セットです。",
+      "categories": {
+        "all": "すべて",
+        "introduction": "自己紹介",
+        "motivation": "志望動機",
+        "research": "研究",
+        "experience": "経験",
+        "future": "将来"
+      },
+      "questions": [
+        {
+          "id": "ja-01",
+          "category": "introduction",
+          "question": "一分程度で自己紹介をお願いします。",
+          "answer": "はい。私は学部で専門分野の基礎を学びながら、授業と研究活動を通して、課題を整理し検証する力を身につけてきました。特に、データや根拠に基づいて考えることに関心があります。大学院では専門性をさらに深め、異なる背景を持つ人とも協力しながら、社会に役立つ研究に取り組みたいと考えています。"
+        },
+        {
+          "id": "ja-02",
+          "category": "motivation",
+          "question": "なぜ大学院に進学したいのですか。",
+          "answer": "学部で学ぶ中で、既存の知識を使うだけでなく、自分で問いを立てて検証する過程に魅力を感じたからです。大学院では、研究方法を体系的に学び、教員や学生との議論を通して考えを深めたいです。そして、根拠のある提案を社会に還元できる力を身につけたいと考えています。"
+        },
+        {
+          "id": "ja-03",
+          "category": "motivation",
+          "question": "数ある大学の中で、なぜ本学を志望したのですか。",
+          "answer": "私の関心に近い研究テーマだけでなく、関連分野を横断して学べる環境に魅力を感じたためです。また、研究設備や指導体制に加えて、異なる専門を持つ学生と議論できる点も重視しています。入学後は、自分の強みを生かしながら研究室の活動に貢献したいです。"
+        },
+        {
+          "id": "ja-04",
+          "category": "research",
+          "question": "あなたの研究計画を、専門外の人にも分かるように説明してください。",
+          "answer": "まず、現場でどのような問題が起きているのかを具体例で示します。次に、その問題を解くために、どの情報を集め、どの方法で比較するのかを簡単な言葉で説明します。最後に、得られた結果が誰の判断にどのように役立つのか、そして現時点の限界は何かを明確にします。"
+        },
+        {
+          "id": "ja-05",
+          "category": "research",
+          "question": "その研究の新規性と期待される貢献は何ですか。",
+          "answer": "新規性は、新しい対象や条件に着目し、従来の方法では十分に検討されていなかった点を比較できることです。学術的には理解の不足している部分を補い、実務的には意思決定に使える根拠を示すことを目指します。ただし、既存研究との差は文献調査を続けながら慎重に整理します。"
+        },
+        {
+          "id": "ja-06",
+          "category": "research",
+          "question": "研究方法を選んだ理由と、その限界を説明してください。",
+          "answer": "研究目的に対して必要な比較を明確にでき、利用可能なデータにも適用できるため、この方法を選びました。一方で、測定できない要因の影響や標本数の制約が残る可能性があります。そのため、前提条件を明示し、感度分析や別の方法との比較によって結果の頑健性を確認します。"
+        },
+        {
+          "id": "ja-07",
+          "category": "experience",
+          "question": "チームで意見が対立したとき、どのように対応しますか。",
+          "answer": "最初に、各意見の背景にある目的と懸念を確認します。次に、評価基準をチームで共有し、事実と仮説を分けて比較します。結論がすぐに出ない場合は、小さな検証を行って判断材料を増やします。決定後は役割と期限を明確にし、全員が同じ方向に進めるようにします。"
+        },
+        {
+          "id": "ja-08",
+          "category": "experience",
+          "question": "計画どおりに進まなかった経験と、そこから学んだことを教えてください。",
+          "answer": "作業量を過小評価し、最初の計画に遅れが生じた経験があります。そこで、作業を小さな単位に分け、優先順位と確認日を設定し直しました。また、早い段階で周囲に相談するようにしました。この経験から、進捗を数値で確認し、問題が小さいうちに計画を更新する重要性を学びました。"
+        },
+        {
+          "id": "ja-09",
+          "category": "future",
+          "question": "修了後の進路と、研究を通して実現したいことを教えてください。",
+          "answer": "修了後は、研究で身につけた分析力と説明力を生かし、専門知識を現実の課題解決につなげる仕事に取り組みたいです。短期的には研究成果を分かりやすく伝えられる人材を目指し、長期的には異なる専門家をつなぎ、より良い意思決定を支えられるようになりたいです。"
+        }
+      ]
+    },
+    {
+      "id": "en",
+      "label": "English",
+      "locale": "en-US",
+      "name": "Graduate & Research Interviews",
+      "description": "A privacy-safe practice deck for common graduate-school and research interview topics.",
+      "categories": {
+        "all": "All",
+        "introduction": "Introduction",
+        "motivation": "Motivation",
+        "research": "Research",
+        "experience": "Experience",
+        "future": "Future"
+      },
+      "questions": [
+        {
+          "id": "en-01",
+          "category": "introduction",
+          "question": "Please introduce yourself in about one minute.",
+          "answer": "I developed a solid foundation in my field through coursework and research activities. Those experiences taught me how to define a problem, examine evidence, and explain my reasoning clearly. I am especially interested in using rigorous analysis to address practical questions. In graduate school, I hope to deepen my expertise, collaborate across disciplines, and contribute to research with real-world value."
+        },
+        {
+          "id": "en-02",
+          "category": "motivation",
+          "question": "Why do you want to pursue graduate study?",
+          "answer": "During my undergraduate studies, I became interested not only in applying existing knowledge but also in formulating and testing new questions. Graduate study would let me learn research methods systematically and improve my ideas through discussion with faculty and peers. My goal is to develop the skills needed to produce careful evidence and translate it into useful recommendations."
+        },
+        {
+          "id": "en-03",
+          "category": "motivation",
+          "question": "Why did you choose this program among the available options?",
+          "answer": "I chose this program because it combines strong expertise in my area of interest with opportunities to learn across related fields. I also value its research environment, supervision, and the chance to exchange ideas with students from different backgrounds. If admitted, I would use my existing strengths while contributing actively to the program's research community."
+        },
+        {
+          "id": "en-04",
+          "category": "research",
+          "question": "Please explain your research plan to someone outside your field.",
+          "answer": "I would begin with a concrete example of the practical problem. I would then explain, in plain language, what information I need and how I will compare the alternatives. Finally, I would describe who could use the findings, what decision they may support, and which limitations should be considered before applying the results."
+        },
+        {
+          "id": "en-05",
+          "category": "research",
+          "question": "What is novel about your proposed research, and what contribution do you expect?",
+          "answer": "The novelty lies in examining a population or condition that has not been compared carefully with existing methods. Academically, the study may fill a gap in current understanding. Practically, it aims to provide evidence that supports better decisions. I would continue reviewing the literature so that I can define the difference from prior work accurately and avoid overstating the contribution."
+        },
+        {
+          "id": "en-06",
+          "category": "research",
+          "question": "Why did you choose this method, and what are its limitations?",
+          "answer": "I chose the method because it matches the research question and can be applied to the available data. However, unmeasured factors, sample size, or model assumptions may still affect the findings. I would state those assumptions clearly, conduct sensitivity analyses, and compare alternative methods where possible to assess how robust the conclusions are."
+        },
+        {
+          "id": "en-07",
+          "category": "experience",
+          "question": "How do you handle disagreement within a team?",
+          "answer": "First, I clarify the goal and the concern behind each position. Then I ask the team to agree on evaluation criteria and separate established facts from assumptions. If the evidence is insufficient, I suggest a small test that can reduce uncertainty. Once we decide, I summarize responsibilities and deadlines so that everyone can move forward together."
+        },
+        {
+          "id": "en-08",
+          "category": "experience",
+          "question": "Describe a time when your plan did not work and what you learned.",
+          "answer": "I once underestimated the amount of work required and fell behind the original schedule. I responded by breaking the work into smaller tasks, resetting priorities, and adding regular checkpoints. I also began asking for feedback earlier. The experience taught me to track progress with concrete indicators and revise a plan while the problem is still manageable."
+        },
+        {
+          "id": "en-09",
+          "category": "future",
+          "question": "What do you hope to do after graduation, and what impact do you want your research to have?",
+          "answer": "After graduation, I hope to apply the analytical and communication skills developed through research to practical problems. In the near term, I want to become someone who can explain evidence clearly to both specialists and non-specialists. Over time, I hope to connect people from different fields and support better, more transparent decisions."
+        }
+      ]
+    },
+    {
+      "id": "zh",
+      "label": "中文",
+      "locale": "zh-CN",
+      "name": "研究生与科研面试",
+      "description": "适用于研究生入学和科研面试的通用练习题库，不含真实个人信息。",
+      "categories": {
+        "all": "全部",
+        "introduction": "自我介绍",
+        "motivation": "申请动机",
+        "research": "研究计划",
+        "experience": "经历",
+        "future": "未来规划"
+      },
+      "questions": [
+        {
+          "id": "zh-01",
+          "category": "introduction",
+          "question": "请用一分钟左右做一下自我介绍。",
+          "answer": "我在本科阶段通过课程与研究活动打下了专业基础，也逐渐掌握了界定问题、分析证据和清晰表达思路的方法。我尤其关注如何用严谨的分析解决现实问题。进入研究生阶段后，我希望继续深化专业能力，与不同背景的同学合作，并参与具有实际价值的研究。"
+        },
+        {
+          "id": "zh-02",
+          "category": "motivation",
+          "question": "你为什么希望继续攻读研究生。",
+          "answer": "本科阶段的学习让我发现，我不仅希望使用已有知识，也希望能够自己提出问题并进行验证。研究生阶段可以让我系统学习研究方法，并通过与老师和同学讨论不断完善想法。我的目标是形成严谨获取证据的能力，并把研究结果转化为有用的建议。"
+        },
+        {
+          "id": "zh-03",
+          "category": "motivation",
+          "question": "在众多选择中，你为什么申请这个项目。",
+          "answer": "这个项目既有与我兴趣相关的研究积累，也提供跨领域学习的机会。我同样重视研究环境、指导机制，以及与不同背景同学交流的可能性。如果能够入学，我会发挥已有优势，主动参与讨论，并为项目的研究共同体作出贡献。"
+        },
+        {
+          "id": "zh-04",
+          "category": "research",
+          "question": "请向非本专业的人介绍你的研究计划。",
+          "answer": "我会先用一个具体例子说明现实中存在什么问题，再用通俗语言解释需要收集哪些信息，以及如何比较不同方案。最后，我会说明研究结果可能帮助哪些人做出什么判断，同时明确这些结果在应用时需要注意的条件和局限。"
+        },
+        {
+          "id": "zh-05",
+          "category": "research",
+          "question": "你的研究有什么创新性，预期贡献是什么。",
+          "answer": "创新性主要体现在关注一个以往没有被充分比较的人群或条件，并用合适的方法重新检验。学术上，我希望补充现有认识中的空白；实践上，我希望提供能够辅助决策的证据。同时，我会持续梳理文献，准确说明与既有研究的差异，避免夸大贡献。"
+        },
+        {
+          "id": "zh-06",
+          "category": "research",
+          "question": "你为什么选择这种研究方法，它有哪些局限。",
+          "answer": "我选择这种方法，是因为它与研究问题相匹配，也能够应用于现有数据。不过，未测量因素、样本量和模型假设仍可能影响结果。因此，我会明确说明前提条件，进行敏感性分析，并在条件允许时与其他方法比较，以判断结论是否稳健。"
+        },
+        {
+          "id": "zh-07",
+          "category": "experience",
+          "question": "团队成员意见不一致时，你会如何处理。",
+          "answer": "我会先确认共同目标，并了解每种意见背后的顾虑。随后，我会邀请团队统一评价标准，把已经确认的事实和仍需验证的假设分开。如果证据不足，可以先做一个小规模测试来减少不确定性。形成决定后，再明确每个人的职责和时间节点。"
+        },
+        {
+          "id": "zh-08",
+          "category": "experience",
+          "question": "请介绍一次计划没有顺利推进的经历，以及你从中学到了什么。",
+          "answer": "我曾经低估了任务所需时间，导致进度落后。发现问题后，我把工作拆分为更小的任务，重新排列优先级，并设置固定检查点，同时更早向他人寻求反馈。这次经历让我认识到，应当用具体指标跟踪进展，并在问题还可控时及时调整计划。"
+        },
+        {
+          "id": "zh-09",
+          "category": "future",
+          "question": "毕业后你希望从事什么工作，并通过研究产生怎样的影响。",
+          "answer": "毕业后，我希望把研究中形成的分析和沟通能力用于解决实际问题。短期内，我想成为能够向专业人士和普通受众清晰解释证据的人。长期来看，我希望连接不同领域的成员，帮助团队作出更合理、更透明的判断。"
+        }
+      ]
+    }
+  ]
+}
