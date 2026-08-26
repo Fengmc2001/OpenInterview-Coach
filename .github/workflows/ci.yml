@@ -62,5 +62,8 @@ jobs:
       - name: Verify GitHub Pages artifact
         run: node scripts/verify_pages_build.mjs --base /
 
+      - name: Prepare non-secret Sites build configuration
+        run: cp .openai/hosting.example.json .openai/hosting.json
+
       - name: Build GPT Sites edition
         run: npm run build
