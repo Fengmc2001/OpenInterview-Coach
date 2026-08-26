@@ -21,7 +21,7 @@
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build",
+    "build": "vinext build && node scripts/prune_sites_server_assets.mjs",
     "build:pages": "vite build --config vite.pages.config.ts",
     "start": "vinext start",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern pages-dist --ignore-pattern .next --ignore-pattern .vinext --ignore-pattern .wrangler",
