@@ -193,6 +193,16 @@ npm install
 npm run build
 ```
 
+**English.** Set `SITE_URL` in the production runtime environment so favicon and social-preview metadata resolve against your deployed domain. This URL is public metadata, not a secret. For a self-hosted production check, pass the same variable when starting the server.
+
+**简体中文。** 请在生产运行环境中设置 `SITE_URL`，使网站图标与社交预览元数据指向你的部署域名。这个网址属于公开元数据，不是密钥。自行托管并检查生产版本时，请在启动服务器时传入同一变量。
+
+**日本語。** 本番実行環境では `SITE_URL` を設定し、ファビコンとソーシャルプレビューのメタデータがデプロイ先ドメインを参照するようにしてください。この URL は公開メタデータであり、秘密情報ではありません。セルフホストした本番版を確認する場合は、サーバー起動時にも同じ変数を渡します。
+
+```bash
+SITE_URL="https://your-site.example" npm start
+```
+
 **English.** ChatGPT Sites and GitHub Pages host the same public content but use different build adapters. A deployment target does not change the privacy boundary: secrets remain local, and only reviewed static content and audio are published.
 
 **简体中文。** ChatGPT Sites 与 GitHub Pages 托管相同的公开内容，但使用不同的构建适配层。部署目标不会改变隐私边界：密钥始终留在本地，只有经过审查的静态内容与音频会被发布。

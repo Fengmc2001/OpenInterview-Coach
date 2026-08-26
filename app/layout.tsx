@@ -1,23 +1,31 @@
 import type { Metadata } from 'next';
 import './globals.css';
 
+const siteUrl = process.env.SITE_URL ?? 'http://localhost:3000';
+
 export const metadata: Metadata = {
   title: 'OpenInterview Coach',
   description:
     'A privacy-first, multilingual, open-source interview practice website with reusable question decks and AI-generated audio.',
-  metadataBase: new URL('https://fengmc2001.github.io/OpenInterview-Coach/'),
-  icons: { icon: '/OpenInterview-Coach/favicon.png' },
+  metadataBase: new URL(siteUrl),
+  icons: {
+    icon: [
+      { url: '/favicon.ico', type: 'image/x-icon' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+  },
   openGraph: {
     title: 'OpenInterview Coach',
     description: 'Practice interviews in Japanese, English, and Chinese with privacy-safe prompts and AI-generated audio.',
-    images: ['/OpenInterview-Coach/og.png'],
+    images: ['/og.png'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'OpenInterview Coach',
     description: 'Practice interviews in Japanese, English, and Chinese with privacy-safe prompts and AI-generated audio.',
-    images: ['/OpenInterview-Coach/og.png'],
+    images: ['/og.png'],
   },
 };
 
