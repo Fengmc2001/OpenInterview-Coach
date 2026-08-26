@@ -325,7 +325,7 @@ export default function CoachApp() {
       <header className="masthead">
         <div>
           <p className="eyebrow">{copy.eyebrow}</p>
-          <h1>OpenInterview<br />Coach</h1>
+          <h1>Open<wbr />Interview<br />Coach</h1>
           <p className="lede">{copy.lede}</p>
         </div>
         <div className="issue-box" aria-label="Project status">

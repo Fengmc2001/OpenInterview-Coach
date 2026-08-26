@@ -80,6 +80,10 @@ a {
   border-bottom: 2px solid var(--ink);
 }
 
+.masthead > div:first-child {
+  min-width: 0;
+}
+
 .eyebrow,
 .label,
 .counter {
@@ -99,6 +103,7 @@ p {
 }
 
 h1 {
+  max-width: 100%;
   margin: 12px 0 16px;
   font-family: Georgia, "Noto Serif CJK JP", "Noto Serif CJK SC", serif;
   font-size: clamp(3rem, 7.6vw, 6.2rem);
@@ -112,9 +117,11 @@ h1 {
   color: var(--ink-soft);
   font-size: 1.04rem;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .issue-box {
+  max-width: 100%;
   align-self: start;
   border: 2px solid var(--ink);
   background: var(--surface);
