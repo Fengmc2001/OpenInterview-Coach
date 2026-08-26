@@ -1,0 +1,31 @@
+# Dependencies and build output
+node_modules/
+.next/
+.vinext/
+.wrangler/
+dist/
+pages-dist/
+coverage/
+*.tsbuildinfo
+
+# Local credentials and private review terms
+.env
+.env.*
+!.env.example
+.private-terms.txt
+.private-terms.*
+
+# A local Sites project binding must not be published. Commit the example only.
+.openai/hosting.json
+!.openai/hosting.example.json
+
+# Python and editor state
+__pycache__/
+*.py[cod]
+.DS_Store
+.idea/
+.vscode/
+
+# Atomic audio-generation temporary files
+public/audio/**/*.tmp
+public/audio/**/.tmp-*

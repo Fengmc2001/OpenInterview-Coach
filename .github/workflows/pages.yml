@@ -1,0 +1,76 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate public content and audio
+        run: node scripts/validate_content.mjs --require-audio
+
+      - name: Run privacy and secret gate
+        run: node scripts/privacy_gate.mjs
+
+      - name: Check trilingual README structure
+        run: npm run docs:check
+
+      - name: Audit production dependencies
+        run: npm run audit:prod
+
+      - name: Build static application
+        env:
+          PAGES_BASE: /${{ github.event.repository.name }}/
+        run: npm run build:pages
+
+      - name: Verify static artifact
+        env:
+          PAGES_BASE: /${{ github.event.repository.name }}/
+        run: node scripts/verify_pages_build.mjs --base "$PAGES_BASE"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: pages-dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
